@@ -2,6 +2,7 @@
 import { Graph } from '@antv/g6'
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { creativeGraphEdges, creativeGraphNodes } from '../data/mockProject'
+import { zhText } from '../utils/zhText'
 
 const container = ref<HTMLDivElement | null>(null)
 const renderError = ref('')
@@ -42,12 +43,19 @@ const renderGraph = async () => {
       data: {
         nodes: creativeGraphNodes.map((node) => ({
           id: node.id,
-          data: node,
+          data: {
+            ...node,
+            label: zhText(node.label),
+            status: zhText(node.status),
+          },
         })),
         edges: creativeGraphEdges.map((edge) => ({
           source: edge.source,
           target: edge.target,
-          data: edge,
+          data: {
+            ...edge,
+            label: zhText(edge.label),
+          },
         })),
       },
       node: {
@@ -94,7 +102,7 @@ const renderGraph = async () => {
 
     await (graphInstance as { render: () => Promise<void> }).render()
   } catch (error) {
-    renderError.value = error instanceof Error ? error.message : 'G6 render failed'
+    renderError.value = error instanceof Error ? error.message : 'G6 渲染失败'
   }
 }
 
@@ -118,8 +126,8 @@ onBeforeUnmount(() => {
 <template>
   <section class="panel antv-panel">
     <div class="panel-heading">
-      <h2>Creative Graph Example</h2>
-      <span class="chart-note">Rendered with @antv/g6</span>
+      <h2>创作图谱示例</h2>
+      <span class="chart-note">由 @antv/g6 渲染</span>
     </div>
     <div ref="container" class="g6-canvas" />
     <p v-if="renderError" class="render-error">{{ renderError }}</p>

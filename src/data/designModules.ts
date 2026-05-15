@@ -1,4 +1,4 @@
-import type { DesignModule, SubDocument, WorkbenchSketch } from '../types'
+import type { DesignModule, ProductionFrame, SubDocument, WorkbenchSketch } from '../types'
 
 const SOURCE_ROOT = '/Users/suqing/Coding/golang/00_self/tuyu-studio/docs/design'
 
@@ -28,6 +28,62 @@ const sketch = (
     { label: 'privacy: local-first', tone: 'risk' },
   ],
 })
+
+const productionFrameSketch = (
+  title: string,
+  eyebrow: string,
+  frame: ProductionFrame,
+): WorkbenchSketch => ({
+  title,
+  eyebrow,
+  activeTab: 'Graph',
+  tabs: ['Project', 'Graph', 'Assets', 'Runs', 'Health'],
+  boardTitle: '双层生产组',
+  boardItems: [],
+  inspectorTitle: 'Inspector / Rules',
+  inspectorItems: [],
+  queueTitle: 'Task & Health Rail',
+  queueItems: [],
+  footerItems: [
+    { label: 'autosave: clean', tone: 'app' },
+    { label: 'audit: writable', tone: 'source' },
+    { label: 'privacy: local-first', tone: 'risk' },
+  ],
+  variant: 'production-frame',
+  productionFrame: frame,
+})
+
+const moduleProductionFrame: ProductionFrame = {
+  title: '外层生产组：可运行上下文',
+  intent: '生产意图、输出目标、供应商能力和历史归属都在外层',
+  referenceGroup: {
+    title: '内层参考组：输入集合',
+    role: '动作节奏、角色身份、场景素材',
+    priority: 'locked refs first',
+    inputNodes: [
+      { label: '视频参考', meta: '动作 / 节奏 / 镜头运动', tone: 'source' },
+      { label: '角色图片', meta: '身份 / 服装 / 脸部锁定', tone: 'app' },
+    ],
+    notes: '参考说明进入 data 包装。',
+  },
+  outputNode: { label: '输出节点', meta: '文本 / 图片 / 视频按能力启用', tone: 'flow' },
+  requiredCapabilities: ['textUnderstanding', 'imageUnderstanding', 'videoUnderstanding', 'imageGeneration', 'videoGeneration'],
+  historySummary: [
+    { label: '当前', meta: '当前版本', tone: 'app' },
+    { label: '收藏', meta: '用户标记', tone: 'flow' },
+    { label: '最近成功', meta: '可回退', tone: 'source' },
+  ],
+  taskStates: [
+    { label: '文本理解', meta: '提示词优化和剧本分镜可运行', tone: 'app' },
+    { label: '媒体理解缺失', meta: '图片/视频分析降级为人工说明', tone: 'risk' },
+    { label: '视频生成', meta: '接入生成供应商后启用', tone: 'flow' },
+  ],
+  storyboardRows: [
+    { label: '候选镜号 1', meta: '中景 / 推 / 建立空间', tone: 'source' },
+    { label: '候选镜号 2', meta: '近景 / 跟随 / 动作变化', tone: 'app' },
+    { label: '回写门禁', meta: '逐行确认后创建镜头', tone: 'risk' },
+  ],
+}
 
 const doc = (
   moduleDir: string,
@@ -139,7 +195,7 @@ export const designModules = [
     navTitle: '01 Local Storage',
     readmeSourcePath: source('details/01-local-project-storage/README.md'),
     summary:
-      '本地项目目录是生产数据执行真相，围绕 project.json、graph.json、资产、运行记录、包、审计和迁移备份保持可保存、可迁移、可恢复。',
+      '本地项目目录是生产数据执行真相，围绕单一项目清单、资产、运行记录、包、审计和迁移备份保持可保存、可迁移、可恢复。',
     sourceTruth: [
       '项目内引用默认使用相对路径，避免把本机路径写入可迁移项目文件。',
       '保存先校验、写临时文件、原子替换，失败时保留上一版有效文件。',
@@ -156,16 +212,16 @@ export const designModules = [
           'Package 版本目录是可离线交接的镜头资料。',
           '外部文件只作为显式 managed reference 进入健康检查。',
         ],
-        ['缺少 project.json 或 graph.json 阻断正式打开。', '绝对路径泄漏阻断 Package 导出。'],
+        ['缺少项目清单或图谱分区阻断正式打开。', '绝对路径泄漏阻断 Package 导出。'],
         ['旧锁按 stale lock 处理。', '资产复制中断时未完成文件不进入 asset index。'],
       ),
       doc(
         '01-local-project-storage',
         'schema-and-migration.md',
         'Schema and Migration',
-        'project.json、schema version、迁移、备份和回滚。',
+        '项目清单版本、迁移、备份和回滚。',
         [
-          'schemaVersion 描述项目数据结构版本，不等于应用版本。',
+          '项目清单版本描述项目数据结构版本，不等于应用版本。',
           '迁移先识别支持范围，再创建可校验备份，最后迁移并验证。',
           '迁移脚本必须幂等。',
         ],
@@ -212,8 +268,8 @@ export const designModules = [
       'Local Project',
       'Health',
       [
-        { label: 'project.json', meta: 'schema 1.0.0', tone: 'source' },
-        { label: 'graph.json', meta: 'version 28', tone: 'app' },
+        { label: '项目清单', meta: '结构版本 1.0.0', tone: 'source' },
+        { label: '图谱分区', meta: '版本 28', tone: 'app' },
         { label: 'packages/shot_012/v03', meta: 'ready', tone: 'flow' },
       ],
       [
@@ -235,9 +291,10 @@ export const designModules = [
     navTitle: '02 Creative Graph',
     readmeSourcePath: source('details/02-creative-graph-domain-model/README.md'),
     summary:
-      'Creative Graph 用节点和边表达创作对象、上下文、任务、包和结果之间的生产关系；图谱只保存画布结构和展示摘要，领域对象由各自目录负责。',
+      'Creative Graph 用节点、边和双层生产组表达创作对象、上下文、任务、输出和历史之间的生产关系；图谱保存画布结构和展示摘要，领域对象由各自目录负责。',
     sourceTruth: [
       'GraphNode.refId 指向领域对象，节点不是领域数据唯一真相。',
+      '生产组是可运行画布上下文，参考组是输入集合，二者不替代镜头、提示词或资产。',
       'PromptRun 不是 GraphNode 或 GraphEdge 端点。',
       '状态变化必须由明确事件触发并写入项目数据和 audit。',
     ],
@@ -249,6 +306,7 @@ export const designModules = [
         '节点、边、领域对象引用和合法关系。',
         [
           'Graph 只保存关系和展示摘要，领域对象完整内容通过 refId 读取。',
+          '生产组包含参考组、输出节点和历史摘要，生产组运行引用运行记录而不建成图端点。',
           '影响生产上下文的边必须经过合法关系矩阵校验。',
           'PromptRun 通过领域字段和 run records 引用。',
         ],
@@ -297,30 +355,17 @@ export const designModules = [
     ],
     invariants: [
       'GraphDocument 保存画布结构、布局、引用和版本。',
+      '内层参考组只管理输入引用，外层生产组承载任务意图、输出目标和历史摘要。',
       'refines 只表示同类对象版本链路。',
       '删除 Node 不会误删领域对象。',
     ],
     errorSemantics: ['非法关系、循环依赖、缺失 ref、stale graph version 都必须可解释。'],
     recoverySemantics: ['通过占位、重新绑定、重新导出和新 run 保留历史，不覆盖旧证据。'],
     workflowRefs: ['overview', 'creative-graph', 'shot-prompt', 'package-export', 'result-review'],
-    sketch: sketch(
+    sketch: productionFrameSketch(
       'Creative Graph Canvas',
       'Graph Domain',
-      'Graph',
-      [
-        { label: 'Character: 小夏', meta: 'locked continuity', tone: 'app' },
-        { label: 'Shot 012', meta: 'context_ready', tone: 'flow' },
-        { label: 'Package v03', meta: 'stale', tone: 'risk' },
-      ],
-      [
-        { label: 'refId', meta: 'shot_012', tone: 'source' },
-        { label: 'Relations', meta: 'uses / belongs_to / produces', tone: 'app' },
-        { label: 'Impact', meta: '2 packages affected', tone: 'risk' },
-      ],
-      [
-        { label: 'context digest', meta: 'dirty after asset change', tone: 'flow' },
-        { label: 'layout autosave', meta: 'version 28', tone: 'app' },
-      ],
+      moduleProductionFrame,
     ),
   },
   {
@@ -427,8 +472,9 @@ export const designModules = [
     navTitle: '04 Script to Package',
     readmeSourcePath: source('details/04-script-shot-package-workflow/README.md'),
     summary:
-      '剧本、场次、镜头、提示词、参考图、生成包和结果回收形成镜头级闭环；生成包是交接产物，不反向覆盖源镜头或连续性规则。',
+      '剧本、场次、镜头、分镜表候选、提示词、参考图、生成包和结果回收形成镜头级闭环；候选必须确认后才回写正式 Shot。',
     sourceTruth: [
+      '分镜表可以来自剧本规划、参考视频拆解或人工说明，输出先作为候选。',
       'Shot.status=package_ready 表示 GenerationPackage 已 ready 且 manifest 校验通过。',
       '用户完成交接后才推进到 submitted，结果回收后才推进到 generated。',
       'VideoResult 是回收结果和 review 状态，不等同于最终成片。',
@@ -454,6 +500,7 @@ export const designModules = [
         'ShotCard 字段、必填校验、状态推进和 review。',
         [
           'ShotCard 包含场景、角色、动作、镜头、时长、状态和引用。',
+          '分镜表候选逐行确认后才创建或更新 ShotCard。',
           '必填字段缺失阻断指令预览、运行或导出。',
           '状态推进必须留下运行或手动操作记录。',
         ],
@@ -488,6 +535,7 @@ export const designModules = [
       ),
     ],
     invariants: [
+      '分镜分析和视频拆镜输出不自动污染正式 Shot。',
       'GenerationPackage.status 只使用 draft、ready、handed_off、result_received、stale、invalid。',
       'GenerationPackage 不反向覆盖源 Shot、Prompt 或连续性规则。',
       '结果回收追加 take 和 review，不覆盖交接包历史。',
@@ -500,13 +548,13 @@ export const designModules = [
       'Script Production',
       'Runs',
       [
-        { label: 'Scene 03', meta: 'confirmed', tone: 'source' },
-        { label: 'Shot 012', meta: 'prompt_ready', tone: 'app' },
+        { label: '分镜表候选', meta: '3 行等待确认', tone: 'source' },
+        { label: 'Shot 012', meta: '回写后提示词就绪', tone: 'app' },
         { label: 'Package v03', meta: 'manifest ok', tone: 'flow' },
       ],
       [
-        { label: 'Required fields', meta: 'camera/action/duration ok', tone: 'app' },
-        { label: 'References', meta: '4 assets included', tone: 'source' },
+        { label: '回写门禁', meta: '用户逐行确认', tone: 'risk' },
+        { label: '引用', meta: '生产组输入进入镜头上下文', tone: 'source' },
         { label: 'State gate', meta: 'await handoff mark', tone: 'flow' },
       ],
       [
@@ -523,9 +571,10 @@ export const designModules = [
     navTitle: '05 Instruction Stack',
     readmeSourcePath: source('details/05-instruction-stack-and-skills/README.md'),
     summary:
-      '指令栈把项目原则、上下文、能力包、模板和输出契约按稳定顺序编译，防止剧本、图片说明或用户备注覆盖系统规则。',
+      '指令栈把项目原则、Frame 上下文、能力包、模板和输出契约按稳定顺序编译，防止剧本、图片说明或用户备注覆盖系统规则。',
     sourceTruth: [
       '正式对象写入必须发生在输出校验通过之后。',
+      '分镜分析候选、媒体理解结果和用户备注都必须作为 data 包装。',
       '素材和用户内容必须包装为 data，不得作为系统指令。',
       '能力包需要声明输入、输出、规则、版本和可用性。',
     ],
@@ -563,6 +612,7 @@ export const designModules = [
         '结构化输出 schema、校验、写入策略和失败处理。',
         [
           '输出必须匹配 schema 后才写正式对象。',
+          'storyboard_analysis 输出只能生成候选行，确认后才回写 Shot。',
           '原始输出和错误摘要保存在 run 记录。',
           '失败不污染 Scene、Shot、Prompt 或 Package。',
         ],
@@ -619,9 +669,10 @@ export const designModules = [
     navTitle: '06 Runtime Adapters',
     readmeSourcePath: source('details/06-ai-runtime-and-provider-adapters/README.md'),
     summary:
-      'RuntimeGateway 负责任务创建、队列、取消、状态、运行记录和错误映射；图像生成与视频交接差异被收敛到 adapter/profile。',
+      '运行网关负责任务创建、队列、取消、状态、运行记录和错误映射；供应商能力拆成理解层与生成层，图片、视频和交接能力都通过能力声明进入工作台。',
     sourceTruth: [
-      '外部 provider 不进入产品主叙事，只通过 profile 和 adapter 表达。',
+      '外部供应商不进入产品主叙事，只通过配置、适配器和能力声明表达。',
+      '理解能力与生成能力分层声明；缺能力时任务降级而不是删除生产组。',
       '任务运行必须具备进度、取消、失败重试、超时、可读错误和运行记录。',
       '重试创建新 run 或新产物版本，不覆盖历史。',
     ],
@@ -649,7 +700,7 @@ export const designModules = [
           'adapter 负责 provider 错误到产品错误语义的映射。',
           '失败不污染正式绑定和连续性规则。',
         ],
-        ['provider rate limit 显示等待或重试。', 'output missing 不创建 Asset。'],
+        ['供应商限流显示等待或重试。', '输出缺失不创建资产。'],
         ['重试创建新 run。', '输出有效后再绑定到 Shot、Character、Scene 或 Prompt。'],
       ),
       doc(
@@ -658,12 +709,12 @@ export const designModules = [
         'Provider Handoff Adapter',
         '视频生成交接 profile、包格式、上传清单和结果绑定。',
         [
-          '交接 adapter 只生成目标 profile 可消费的包和清单。',
-          '默认不自动提交外部平台。',
-          'handoff 后状态由用户显式标记。',
+          '供应商配置声明文本、图片、视频理解能力和图片、视频生成能力。',
+          '交接 adapter 只生成目标 profile 可消费的包和清单；接入 apiSubmit 后才自动提交。',
+          '交接或供应商尝试状态由用户动作或适配器事件推进。',
         ],
-        ['handoff profile invalid 阻断导出。', 'external write unconfirmed 阻断写入。'],
-        ['回到 profile 配置或项目内导出。', '用户完成外部动作后手动标记 handed_off。'],
+        ['供应商能力缺失时禁用对应任务。', '外部写入未确认时阻断写入。'],
+        ['切换供应商或降级为手动交接。', '用户完成外部动作后手动标记已交接。'],
       ),
       doc(
         '06-ai-runtime-and-provider-adapters',
@@ -680,7 +731,8 @@ export const designModules = [
       ),
     ],
     invariants: [
-      'ProviderProfile 可替换，不改变 Shot、GenerationPackage、PromptRun 核心语义。',
+      '供应商配置可替换，不改变镜头、生成交接包、提示词运行的核心语义。',
+      'Codex 应用服务、DeepSeek 类文本接口和 Seekdance 类生成接口都只以能力声明进入设计。',
       '运行错误不覆盖上一份可用产物。',
       '外部传输需要任务预览和用户确认。',
     ],
@@ -692,18 +744,18 @@ export const designModules = [
       'Adapters',
       'Runs',
       [
-        { label: 'PromptRun 84', meta: 'running 62%', tone: 'flow' },
-        { label: 'Image output', meta: 'await validation', tone: 'app' },
-        { label: 'Handoff profile', meta: 'manual submit', tone: 'source' },
+        { label: '理解供应商', meta: '文本可用 / 图片视频可降级', tone: 'source' },
+        { label: '生成供应商', meta: '图片可用 / 视频待接入', tone: 'flow' },
+        { label: '运行历史 18', meta: '历史归属输出版本', tone: 'app' },
       ],
       [
-        { label: 'Provider profile', meta: 'default-video', tone: 'source' },
+        { label: '能力矩阵', meta: '文本 / 图片 / 视频 / 提交', tone: 'source' },
         { label: 'Retry policy', meta: 'new run only', tone: 'flow' },
-        { label: 'Error mapping', meta: 'rate_limit_retryable', tone: 'risk' },
+        { label: '降级状态', meta: '无视频理解时使用手动分镜表', tone: 'risk' },
       ],
       [
         { label: 'queue depth', meta: '3', tone: 'flow' },
-        { label: 'cancel token', meta: 'available', tone: 'app' },
+        { label: '视频生成', meta: '配置生成供应商后启用', tone: 'app' },
       ],
     ),
   },
@@ -715,9 +767,10 @@ export const designModules = [
     navTitle: '07 Workbench UX',
     readmeSourcePath: source('details/07-frontend-workbench-experience/README.md'),
     summary:
-      '工作台围绕项目导航、画布、资产栏、Inspector、任务面板和状态栏组织，让用户高效创作、编辑、检查和交接。',
+      '工作台围绕项目导航、创作图谱画布、双层生产组、Inspector、任务面板和状态栏组织，让用户高效创作、编辑、检查和交接。',
     sourceTruth: [
-      '画布节点视觉要展示类型、状态、错误和连续性徽标。',
+      '画布节点和双层组视觉要展示类型、状态、错误、连续性徽标和历史摘要。',
+      '外层生产组是可运行生产上下文；内层参考组是输入引用集合。',
       'Inspector 承接领域编辑、校验、任务队列、输出预览和审计入口。',
       '生产反馈覆盖保存、运行、导出、回收、错误、恢复和无障碍反馈。',
     ],
@@ -742,6 +795,7 @@ export const designModules = [
         '节点创建、连线、布局、选择、快捷操作和冲突提示。',
         [
           '节点创建和连线即时校验合法关系。',
+          '双层组区分参考输入组和可运行生产组，输出节点和历史轨归属外层。',
           '选择节点后展开上下文和影响范围。',
           '冲突提示需要能定位来源对象。',
         ],
@@ -777,30 +831,17 @@ export const designModules = [
     ],
     invariants: [
       'UI 状态不能替代项目数据、audit 和 run record。',
+      '历史轨只展示当前、收藏、最近成功版本，完整失败/取消/草稿进入运行详情。',
       '主要操作都要有状态徽标、错误区域和恢复入口。',
       '信息密度高但控件尺寸稳定，避免文字重叠。',
     ],
     errorSemantics: ['错误必须能定位到面板、节点、任务或健康项，并展示下一步。'],
     recoverySemantics: ['通过补字段、重新加载、重试、重置布局、运行健康检查继续。'],
     workflowRefs: ['overview', 'project-setup', 'asset-library', 'creative-graph', 'shot-prompt', 'package-export', 'result-review'],
-    sketch: sketch(
+    sketch: productionFrameSketch(
       'Workbench Frame',
       'UX Surface',
-      'Graph',
-      [
-        { label: 'Canvas cluster', meta: 'nodes + edges + badges', tone: 'app' },
-        { label: 'Asset shelf', meta: 'drag to bind', tone: 'source' },
-        { label: 'Health strip', meta: '1 blocking', tone: 'risk' },
-      ],
-      [
-        { label: 'Inspector', meta: 'Shot 012 fields', tone: 'app' },
-        { label: 'Task Queue', meta: 'run / export / import', tone: 'flow' },
-        { label: 'Audit', meta: 'open object history', tone: 'source' },
-      ],
-      [
-        { label: 'autosave', meta: 'clean', tone: 'app' },
-        { label: 'export', meta: 'blocked by missing asset', tone: 'risk' },
-      ],
+      moduleProductionFrame,
     ),
   },
   {

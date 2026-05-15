@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TraceTarget } from '../types'
+import { zhText } from '../utils/zhText'
 import StatusChip from './StatusChip.vue'
 
 defineProps<{
@@ -11,8 +12,8 @@ defineProps<{
 <template>
   <section class="panel trace-panel">
     <div class="panel-heading">
-      <h2>{{ title }}</h2>
-      <StatusChip :label="`${targets.length} links`" tone="source" />
+      <h2>{{ zhText(title) }}</h2>
+      <StatusChip :label="`${targets.length} 个链接`" tone="source" />
     </div>
     <div class="trace-links">
       <a
@@ -22,7 +23,7 @@ defineProps<{
         :class="`tone-${target.tone ?? 'source'}`"
         :href="target.href"
       >
-        {{ target.title }}
+        {{ zhText(target.title) }}
       </a>
     </div>
   </section>

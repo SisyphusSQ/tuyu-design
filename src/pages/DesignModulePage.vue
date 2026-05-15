@@ -39,7 +39,7 @@ const diagram = computed(() => getModuleDiagram(props.module.slug))
 <template>
   <div class="page-stack">
     <PageHeader
-      eyebrow="Design Module"
+      eyebrow="设计模块"
       :title="`${module.index} ${module.title}`"
       :summary="module.summary"
       :chips="module.sourceTruth"
@@ -48,13 +48,13 @@ const diagram = computed(() => getModuleDiagram(props.module.slug))
     <DiagramPanel :spec="diagram" />
 
     <div class="two-panel-grid">
-      <RuleCard title="Key Invariants" :items="module.invariants" tone="source" />
-      <RuleCard title="Error Semantics" :items="module.errorSemantics" tone="risk" />
+      <RuleCard title="关键不变量" :items="module.invariants" tone="source" />
+      <RuleCard title="错误语义" :items="module.errorSemantics" tone="risk" />
     </div>
 
     <div class="two-panel-grid">
-      <RuleCard title="Recovery Semantics" :items="module.recoverySemantics" tone="app" />
-      <TraceLinks title="Related Production Flow" :targets="workflowTargets" />
+      <RuleCard title="恢复语义" :items="module.recoverySemantics" tone="app" />
+      <TraceLinks title="关联生产流程" :targets="workflowTargets" />
     </div>
 
     <WorkbenchFrame :sketch="module.sketch" />
@@ -63,7 +63,7 @@ const diagram = computed(() => getModuleDiagram(props.module.slug))
     <AntvStatusChart
       v-if="module.slug === 'delivery-acceptance'"
       :data="moduleCoverageData"
-      title="Markdown Coverage by Module"
+      title="各模块标记文档覆盖"
     />
 
     <DesignModuleGrid :module="module" />

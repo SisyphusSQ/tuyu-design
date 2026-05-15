@@ -13,6 +13,40 @@ export interface SketchItem {
   tone?: Tone
 }
 
+export type ProviderCapability =
+  | 'textUnderstanding'
+  | 'imageUnderstanding'
+  | 'videoUnderstanding'
+  | 'imageGeneration'
+  | 'videoGeneration'
+  | 'apiSubmit'
+  | 'pollResult'
+
+export interface ReferenceGroup {
+  title: string
+  role: string
+  priority: string
+  inputNodes: SketchItem[]
+  notes?: string
+}
+
+export interface FrameRunSummary {
+  label: string
+  meta: string
+  tone?: Tone
+}
+
+export interface ProductionFrame {
+  title: string
+  intent: string
+  referenceGroup: ReferenceGroup
+  outputNode: SketchItem
+  requiredCapabilities: ProviderCapability[]
+  historySummary: FrameRunSummary[]
+  taskStates: SketchItem[]
+  storyboardRows: SketchItem[]
+}
+
 export interface WorkbenchSketch {
   title: string
   eyebrow: string
@@ -25,6 +59,8 @@ export interface WorkbenchSketch {
   queueTitle: string
   queueItems: SketchItem[]
   footerItems: SketchItem[]
+  variant?: 'default' | 'production-frame'
+  productionFrame?: ProductionFrame
 }
 
 export interface WorkflowPage {

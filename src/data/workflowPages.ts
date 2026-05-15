@@ -1,4 +1,4 @@
-import type { WorkbenchSketch, WorkflowPage } from '../types'
+import type { ProductionFrame, WorkbenchSketch, WorkflowPage } from '../types'
 
 const sketch = (
   title: string,
@@ -24,6 +24,63 @@ const sketch = (
     { label: 'runtime: no backend', tone: 'app' },
   ],
 })
+
+const productionFrameSketch = (
+  title: string,
+  eyebrow: string,
+  frame: ProductionFrame,
+  footerItems: WorkbenchSketch['footerItems'] = [
+    { label: 'source: docs/design', tone: 'source' },
+    { label: 'prototype: review-only', tone: 'flow' },
+    { label: 'runtime: no backend', tone: 'app' },
+  ],
+): WorkbenchSketch => ({
+  title,
+  eyebrow,
+  activeTab: 'Graph',
+  tabs: ['Project', 'Graph', 'Assets', 'Runs', 'Health'],
+  boardTitle: '双层生产组',
+  boardItems: [],
+  inspectorTitle: 'Inspector',
+  inspectorItems: [],
+  queueTitle: 'Queue / Health',
+  queueItems: [],
+  footerItems,
+  variant: 'production-frame',
+  productionFrame: frame,
+})
+
+const balconyFrame: ProductionFrame = {
+  title: '外层生产组：阳台镜头融合',
+  intent: '引用参考视频和角色图，生成文本、图片或视频输出',
+  referenceGroup: {
+    title: '内层参考组：2 个输入',
+    role: '视频动作节奏 + 角色身份服装',
+    priority: 'locked references first',
+    inputNodes: [
+      { label: '视频参考', meta: '动作 / 节奏 / 镜头运动', tone: 'source' },
+      { label: '角色图片', meta: '身份 / 服装 / 脸部锁定', tone: 'app' },
+    ],
+    notes: '用户备注只作为 data 包装，不覆盖锁定规则。',
+  },
+  outputNode: { label: '输出节点', meta: '文本 / 图片 / 视频按供应商能力启用', tone: 'flow' },
+  requiredCapabilities: ['textUnderstanding', 'imageUnderstanding', 'videoUnderstanding', 'imageGeneration', 'videoGeneration'],
+  historySummary: [
+    { label: '当前', meta: '第 3 版', tone: 'app' },
+    { label: '收藏', meta: '第 2 版', tone: 'flow' },
+    { label: '最近成功', meta: '第 1 版', tone: 'source' },
+  ],
+  taskStates: [
+    { label: '提示词优化', meta: '需要文本理解，可运行', tone: 'app' },
+    { label: '图片/视频理解', meta: '缺能力时降级为人工说明或手动分镜', tone: 'risk' },
+    { label: '生成视频', meta: '接入视频生成供应商后启用', tone: 'flow' },
+  ],
+  storyboardRows: [
+    { label: '镜号 1', meta: '中景 / 推 / 建立空间和人物位置', tone: 'source' },
+    { label: '镜号 2', meta: '近景 / 跟随 / 强化角色动作', tone: 'app' },
+    { label: '回写规则', meta: '候选逐行确认后才创建镜头节点', tone: 'risk' },
+  ],
+}
 
 export const workflowPages = [
   {
@@ -99,7 +156,7 @@ export const workflowPages = [
     title: 'Project Setup',
     navTitle: 'Project Setup',
     summary:
-      '项目创建页展示本地项目目录、schema、默认 provider profile、保存状态和健康检查，把未来 App 的第一步固定在可迁移项目根上。',
+      '项目创建页展示本地项目目录、单一项目清单、默认 provider profile、保存状态和健康检查，把未来 App 的第一步固定在可迁移项目根上。',
     sourceBasis: [
       'details/01-local-project-storage/README.md',
       'details/01-local-project-storage/directory-layout.md',
@@ -107,22 +164,22 @@ export const workflowPages = [
     ],
     userActions: [
       '选择 studio root 并创建项目。',
-      '设置项目名称、默认 profile、style bible 和初始 graph。',
-      '打开已有项目时确认恢复检查、锁状态和 schema 支持范围。',
+      '设置项目名称、默认 profile、风格设定和初始图谱。',
+      '打开已有项目时确认恢复检查、锁状态和项目清单版本支持范围。',
     ],
     systemWrites: [
-      '创建 project.json、graph.json、principles.md、style_bible.md 和目录骨架。',
+      '创建一个项目清单，集中保存项目元信息、图谱分区、原则和风格设定索引。',
       '记录 project.create/open、lock takeover、migration 和 health audit。',
       '保存项目相对路径，不把机器私有路径写入 manifest 或 graph。',
     ],
     blockers: [
-      '目标目录不可写、project.json 缺失或 schema 不受支持。',
+      '目标目录不可写、项目清单缺失或项目清单版本不受支持。',
       'active lock 未确认接管。',
       '路径穿越、符号链接逃逸或外部目录写入未确认。',
     ],
     recoveryActions: [
       '只读打开或另存项目。',
-      '从 backups 恢复 graph.json，或进入诊断模式。',
+      '从备份恢复项目清单或图谱分区，或进入诊断模式。',
       '迁移前备份，迁移失败回滚并保留报告。',
     ],
     moduleRefs: ['product-scope', 'local-storage', 'security-observability', 'delivery-acceptance'],
@@ -133,7 +190,7 @@ export const workflowPages = [
       [
         { label: 'Project name', meta: '无名短片', tone: 'app' },
         { label: 'Root path', meta: '{studio_root}/projects/film_a', tone: 'source' },
-        { label: 'Schema', meta: 'supported write', tone: 'app' },
+        { label: '项目清单', meta: '支持写入', tone: 'app' },
         { label: 'Lock', meta: 'no active owner', tone: 'flow' },
       ],
       [
@@ -207,7 +264,7 @@ export const workflowPages = [
     title: 'Creative Graph',
     navTitle: 'Creative Graph',
     summary:
-      '创作图谱页展示未来 App 的主要工作面：以节点、边、状态徽标和 Inspector 把剧本、角色、场景、Shot、Prompt、Package 与 Result 串起来。',
+      '创作图谱页展示未来 App 的主要工作面：以节点、边、双层生产组、状态徽标和 Inspector 把剧本、参考资产、Shot、Prompt、输出与历史串起来。',
     sourceBasis: [
       'details/02-creative-graph-domain-model/README.md',
       'details/02-creative-graph-domain-model/nodes-and-edges.md',
@@ -215,44 +272,33 @@ export const workflowPages = [
     ],
     userActions: [
       '创建节点、连接合法关系、移动布局并选择对象查看 Inspector。',
-      '从 Shot 展开上下文预览，查看资产、连续性、Prompt 和 Package。',
+      '把视频、图片、文本等输入放入内层参考组，再用外层生产组承载任务意图和输出目标。',
+      '从生产组展开上下文预览，查看参考组、供应商能力、输出节点和运行历史。',
       '删除或修改高影响对象前查看 ImpactReport。',
     ],
     systemWrites: [
-      '保存 GraphDocument 的 nodes、edges、viewport、layout 和 version。',
+      '保存图谱文档的节点、边、视口、布局、生产组、参考组和版本。',
       '通过 refId 关联领域对象，Graph 不保存完整领域数据。',
-      '非法关系、断链、dirty 和 stale 状态进入健康检查和 audit。',
+      '生产组运行历史引用提示词运行、适配器尝试和输出资产，不建成图谱节点。',
+      '非法关系、断链、dirty、stale 和 capability missing 状态进入健康检查和 audit。',
     ],
     blockers: [
       'unsupported node kind、invalid relation、cycle detected。',
+      '生产组缺少输出节点、参考组为空或所需 provider capability 缺失。',
       'stale graph version 或 missing required ref。',
       '删除领域对象前 ImpactReport 生成失败。',
     ],
     recoveryActions: [
       '保留 broken reference placeholder 并重新选择领域对象。',
+      '缺图片/视频理解能力时保留生产组，任务降级为人工说明或手动分镜。',
       '只合并纯布局变化；关系和 ref 变化要求用户确认。',
       '取消删除时不留下半删除边或状态变化。',
     ],
     moduleRefs: ['creative-graph', 'asset-continuity', 'script-package', 'instruction-stack', 'workbench-ux'],
-    sketch: sketch(
+    sketch: productionFrameSketch(
       'Creative Graph Workbench',
       'Main canvas',
-      'Graph',
-      [
-        { label: 'Script', meta: 'source data', tone: 'source' },
-        { label: 'Scene 03', meta: 'confirmed', tone: 'app' },
-        { label: 'Shot 012', meta: 'context_ready', tone: 'flow' },
-        { label: 'Package v03', meta: 'stale after asset change', tone: 'risk' },
-      ],
-      [
-        { label: 'Selected node', meta: 'Shot 012', tone: 'app' },
-        { label: 'Valid relations', meta: 'belongs_to / uses / produces', tone: 'source' },
-        { label: 'Impact report', meta: '2 packages affected', tone: 'risk' },
-      ],
-      [
-        { label: 'layout autosave', meta: 'version 28', tone: 'app' },
-        { label: 'context resolver', meta: 'ready', tone: 'flow' },
-      ],
+      balconyFrame,
     ),
   },
   {
@@ -261,7 +307,7 @@ export const workflowPages = [
     title: 'Shot & Prompt',
     navTitle: 'Shot & Prompt',
     summary:
-      '分镜与提示词页展示 ShotCard 字段、上下文解析、指令栈预览、输出契约和 PromptRun 队列，强调运行前的可解释确认。',
+      '分镜与提示词页展示镜头卡字段、双层生产组上下文、供应商能力、输出契约、生产组运行和提示词运行队列，强调运行前的可解释确认。',
     sourceBasis: [
       'details/04-script-shot-package-workflow/shot-card-lifecycle.md',
       'details/05-instruction-stack-and-skills/instruction-compile-order.md',
@@ -269,44 +315,36 @@ export const workflowPages = [
     ],
     userActions: [
       '补齐 ShotCard 的场景、角色、镜头、动作、时长和参考资产。',
-      '预览 ContextBundle、能力包、输出契约和外部能力范围。',
-      '确认后运行结构化文本或图像任务，查看输出预览。',
+      '预览生产组的参考输入组、能力包、输出契约和供应商能力范围。',
+      '确认后运行结构化文本、图像或接入后的视频任务，查看输出预览和历史轨。',
     ],
     systemWrites: [
-      '保存 Shot 字段、ContextBundle digest、compile request 和 PromptRun。',
+      '保存镜头字段、生产组上下文摘要、编译请求、生产组运行和提示词运行。',
       '输出校验通过后才写正式 Prompt、Asset 或 Shot 派生字段。',
       '失败写错误记录，不污染正式对象。',
     ],
     blockers: [
       '必填字段缺失、上下文冲突、context too large。',
       'schema missing、run_output_invalid、provider error。',
+      '图片/视频理解能力缺失时，媒体分析和自动拆镜不可运行。',
       '外部请求缺少用户确认。',
     ],
     recoveryActions: [
       '补字段、裁剪上下文、选择冲突优先级或替换能力包。',
+      '缺媒体理解时改为人工说明或手动分镜表，不删除参考组。',
       '从同一上下文创建新 PromptRun 重试。',
       '输出无效时保留原始摘要并回到预览状态。',
     ],
     moduleRefs: ['creative-graph', 'script-package', 'instruction-stack', 'runtime-adapters', 'security-observability'],
-    sketch: sketch(
+    sketch: productionFrameSketch(
       'Shot Prompt Console',
       'Pre-run preview',
-      'Runs',
-      [
-        { label: 'Shot 012 card', meta: 'duration 4s / camera dolly', tone: 'app' },
-        { label: 'Context bundle', meta: 'scene + 2 characters + 4 refs', tone: 'source' },
-        { label: 'Output contract', meta: 'shot_prompt.v2', tone: 'flow' },
-        { label: 'Conflict check', meta: 'needs rule choice', tone: 'risk' },
-      ],
-      [
-        { label: 'Compile order', meta: 'principles > context > skill > schema', tone: 'source' },
-        { label: 'External data range', meta: 'preview before submit', tone: 'risk' },
-        { label: 'Run state', meta: 'waiting_user', tone: 'flow' },
-      ],
-      [
-        { label: 'PromptRun', meta: 'not created until confirm', tone: 'flow' },
-        { label: 'schema validation', meta: 'ready', tone: 'app' },
-      ],
+      {
+        ...balconyFrame,
+        title: '外层生产组：镜头 012 提示词',
+        intent: '在同一生产组中优化提示词、生成图片请求，并在有能力时生成视频',
+        outputNode: { label: '提示词 / 输出节点', meta: '结构化文本、图片提示词、视频任务', tone: 'flow' },
+      },
     ),
   },
   {

@@ -39,7 +39,7 @@ const diagram = computed(() => getWorkflowDiagram(props.page.slug))
 <template>
   <div class="page-stack">
     <PageHeader
-      eyebrow="Production Flow"
+      eyebrow="生产流程"
       :title="page.title"
       :summary="page.summary"
       :chips="page.sourceBasis"
@@ -50,15 +50,15 @@ const diagram = computed(() => getWorkflowDiagram(props.page.slug))
     <DiagramPanel :spec="diagram" />
 
     <div v-if="page.slug === 'overview'" class="two-panel-grid">
-      <AntvStatusChart :data="productionStateData" title="Production State Distribution" />
+      <AntvStatusChart :data="productionStateData" title="生产状态分布" />
       <section class="panel">
         <div class="panel-heading">
-          <h2>Design Reading</h2>
-          <span class="chart-note">from docs/design</span>
+          <h2>设计阅读</h2>
+          <span class="chart-note">来自 docs/design</span>
         </div>
         <ul class="dense-list">
           <li>本原型把顶层架构、details 索引和 10 个模块目录合并为评审视图。</li>
-          <li>页面内容是手工整理的 TypeScript 数据对象，不在运行时解析 Markdown。</li>
+          <li>页面内容是手工整理的 TypeScript 数据对象，不在运行时解析标记文档。</li>
           <li>交接、运行和结果视图都保留错误、恢复和关联模块入口。</li>
         </ul>
       </section>
@@ -69,12 +69,12 @@ const diagram = computed(() => getWorkflowDiagram(props.page.slug))
     <AntvGraphView v-if="page.slug === 'creative-graph'" />
 
     <div class="four-card-grid">
-      <RuleCard title="User Actions" :items="page.userActions" tone="flow" />
-      <RuleCard title="System Writes / State Changes" :items="page.systemWrites" tone="app" />
-      <RuleCard title="Blocking / Error Conditions" :items="page.blockers" tone="risk" />
-      <RuleCard title="Recovery Actions" :items="page.recoveryActions" tone="source" />
+      <RuleCard title="用户动作" :items="page.userActions" tone="flow" />
+      <RuleCard title="系统写入与状态变化" :items="page.systemWrites" tone="app" />
+      <RuleCard title="阻断与错误条件" :items="page.blockers" tone="risk" />
+      <RuleCard title="恢复动作" :items="page.recoveryActions" tone="source" />
     </div>
 
-    <TraceLinks title="Related Design Modules" :targets="moduleTargets" />
+    <TraceLinks title="关联设计模块" :targets="moduleTargets" />
   </div>
 </template>

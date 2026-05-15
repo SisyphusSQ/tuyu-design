@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DesignModule } from '../types'
+import { zhSourcePath, zhText } from '../utils/zhText'
 import StatusChip from './StatusChip.vue'
 
 defineProps<{
@@ -14,16 +15,16 @@ const scrollToAnchor = (id: string) => {
 <template>
   <section class="panel">
     <div class="panel-heading">
-      <h2>Source Documents</h2>
-      <StatusChip :label="`${module.subdocuments.length + 1} markdown anchors`" tone="source" />
+      <h2>来源文档</h2>
+      <StatusChip :label="`${module.subdocuments.length + 1} 个标记文档锚点`" tone="source" />
     </div>
 
     <div class="source-readme" :id="`${module.slug}-readme`">
       <div>
-        <strong>Module README</strong>
-        <code>{{ module.readmeSourcePath }}</code>
+        <strong>模块说明</strong>
+        <code>{{ zhSourcePath(module.readmeSourcePath) }}</code>
       </div>
-      <StatusChip label="overview source" tone="source" />
+      <StatusChip label="总览来源" tone="source" />
     </div>
 
     <div class="doc-card-grid">
@@ -34,30 +35,30 @@ const scrollToAnchor = (id: string) => {
         class="doc-card"
       >
         <div class="doc-card-head">
-          <h3>{{ subdocument.title }}</h3>
+          <h3>{{ zhText(subdocument.title) }}</h3>
           <button type="button" class="anchor-button" @click="scrollToAnchor(subdocument.id)">#</button>
         </div>
-        <code>{{ subdocument.sourcePath }}</code>
-        <p>{{ subdocument.responsibility }}</p>
+        <code>{{ zhSourcePath(subdocument.sourcePath) }}</code>
+        <p>{{ zhText(subdocument.responsibility) }}</p>
 
         <div class="doc-card-section">
-          <strong>Key Rules</strong>
+          <strong>关键规则</strong>
           <ul>
-            <li v-for="rule in subdocument.keyRules" :key="rule">{{ rule }}</li>
+            <li v-for="rule in subdocument.keyRules" :key="rule">{{ zhText(rule) }}</li>
           </ul>
         </div>
 
         <div class="doc-card-section two-col">
           <div>
-            <strong>Errors</strong>
+            <strong>错误</strong>
             <ul>
-              <li v-for="error in subdocument.errors" :key="error">{{ error }}</li>
+              <li v-for="error in subdocument.errors" :key="error">{{ zhText(error) }}</li>
             </ul>
           </div>
           <div>
-            <strong>Recovery</strong>
+            <strong>恢复</strong>
             <ul>
-              <li v-for="recovery in subdocument.recovery" :key="recovery">{{ recovery }}</li>
+              <li v-for="recovery in subdocument.recovery" :key="recovery">{{ zhText(recovery) }}</li>
             </ul>
           </div>
         </div>

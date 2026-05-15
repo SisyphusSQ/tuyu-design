@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Chart } from '@antv/g2'
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { StatusDatum } from '../types'
+import { zhText } from '../utils/zhText'
 
 const props = withDefaults(
   defineProps<{
@@ -9,12 +10,19 @@ const props = withDefaults(
     title?: string
   }>(),
   {
-    title: 'Coverage / State Distribution',
+    title: '覆盖与状态分布',
   },
 )
 
 const container = ref<HTMLDivElement | null>(null)
 const renderError = ref('')
+const chartData = computed(() =>
+  props.data.map((item) => ({
+    ...item,
+    category: zhText(item.category),
+    type: zhText(item.type),
+  })),
+)
 type ChartApi = {
   destroy?: () => void
   interval: () => {
@@ -50,7 +58,7 @@ const renderChart = async () => {
 
     chart
       .interval()
-      .data(props.data)
+      .data(chartData.value)
       .encode('x', 'category')
       .encode('y', 'value')
       .encode('color', 'type')
@@ -63,7 +71,7 @@ const renderChart = async () => {
 
     await chart.render()
   } catch (error) {
-    renderError.value = error instanceof Error ? error.message : 'G2 render failed'
+    renderError.value = error instanceof Error ? error.message : 'G2 渲染失败'
   }
 }
 
@@ -86,8 +94,8 @@ onBeforeUnmount(() => {
 <template>
   <section class="panel antv-panel">
     <div class="panel-heading">
-      <h2>{{ title }}</h2>
-      <span class="chart-note">Rendered with @antv/g2</span>
+      <h2>{{ zhText(title) }}</h2>
+      <span class="chart-note">由 @antv/g2 渲染</span>
     </div>
     <div ref="container" class="g2-chart" />
     <p v-if="renderError" class="render-error">{{ renderError }}</p>

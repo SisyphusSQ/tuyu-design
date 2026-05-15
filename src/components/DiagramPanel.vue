@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DiagramItem, DiagramSpec } from '../types'
+import { zhSourcePath, zhText } from '../utils/zhText'
 import StatusChip from './StatusChip.vue'
 
 const props = defineProps<{
@@ -7,12 +8,12 @@ const props = defineProps<{
 }>()
 
 const kindLabels: Record<DiagramSpec['kind'], string> = {
-  flow: 'Flow',
-  state: 'State',
-  graph: 'Graph',
-  swimlane: 'Swimlane',
-  lineage: 'Lineage',
-  coverage: 'Coverage',
+  flow: '流程',
+  state: '状态',
+  graph: '图谱',
+  swimlane: '泳道',
+  lineage: '血缘',
+  coverage: '覆盖',
 }
 
 const itemStyle = (index: number) => ({
@@ -26,8 +27,8 @@ const itemKey = (item: DiagramItem, index: number) => `${props.spec.id}-${item.l
   <section class="panel diagram-panel">
     <div class="panel-heading">
       <div>
-        <h2>{{ spec.title }}</h2>
-        <p class="diagram-question">{{ spec.question }}</p>
+        <h2>{{ zhText(spec.title) }}</h2>
+        <p class="diagram-question">{{ zhText(spec.question) }}</p>
       </div>
       <StatusChip :label="kindLabels[spec.kind]" tone="flow" />
     </div>
@@ -37,7 +38,7 @@ const itemKey = (item: DiagramItem, index: number) => `${props.spec.id}-${item.l
         <template v-if="spec.kind === 'swimlane' && spec.lanes">
           <div v-for="lane in spec.lanes" :key="lane.label" class="diagram-lane">
             <div class="lane-title">
-              <StatusChip :label="lane.label" :tone="lane.tone ?? 'neutral'" />
+              <StatusChip :label="zhText(lane.label)" :tone="lane.tone ?? 'neutral'" />
             </div>
             <div
               v-for="(item, index) in lane.items"
@@ -46,8 +47,8 @@ const itemKey = (item: DiagramItem, index: number) => `${props.spec.id}-${item.l
               :class="`tone-border-${item.tone ?? 'neutral'}`"
               :style="itemStyle(index)"
             >
-              <strong>{{ item.label }}</strong>
-              <span>{{ item.meta }}</span>
+              <strong>{{ zhText(item.label) }}</strong>
+              <span>{{ zhText(item.meta) }}</span>
             </div>
           </div>
         </template>
@@ -60,8 +61,8 @@ const itemKey = (item: DiagramItem, index: number) => `${props.spec.id}-${item.l
             :class="`tone-border-${item.tone ?? 'neutral'}`"
             :style="itemStyle(index)"
           >
-            <strong>{{ item.label }}</strong>
-            <span>{{ item.meta }}</span>
+            <strong>{{ zhText(item.label) }}</strong>
+            <span>{{ zhText(item.meta) }}</span>
           </div>
         </template>
       </div>
@@ -69,14 +70,14 @@ const itemKey = (item: DiagramItem, index: number) => `${props.spec.id}-${item.l
       <aside class="diagram-notes">
         <div class="diagram-note-block">
           <strong>读图说明</strong>
-          <p>{{ spec.question }}</p>
+          <p>{{ zhText(spec.question) }}</p>
         </div>
 
         <div class="diagram-note-block">
           <strong>来源文档</strong>
           <ul>
             <li v-for="path in spec.sourcePaths" :key="path">
-              <code>{{ path }}</code>
+              <code>{{ zhSourcePath(path) }}</code>
             </li>
           </ul>
         </div>
@@ -84,7 +85,7 @@ const itemKey = (item: DiagramItem, index: number) => `${props.spec.id}-${item.l
         <div class="diagram-note-block">
           <strong>对应验收点</strong>
           <ul>
-            <li v-for="rule in spec.acceptance" :key="rule">{{ rule }}</li>
+            <li v-for="rule in spec.acceptance" :key="rule">{{ zhText(rule) }}</li>
           </ul>
         </div>
       </aside>

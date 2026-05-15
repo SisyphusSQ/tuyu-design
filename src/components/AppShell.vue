@@ -2,6 +2,7 @@
 import { designModules } from '../data/designModules'
 import { prototypeRoot, prototypeStats, sourceRoot } from '../data/mockProject'
 import { workflowPages } from '../data/workflowPages'
+import { zhSourcePath, zhText } from '../utils/zhText'
 import StatusChip from './StatusChip.vue'
 
 defineProps<{
@@ -16,32 +17,32 @@ defineProps<{
       <div class="brand-block">
         <div class="brand-mark">屿</div>
         <div>
-          <strong>图屿 Studio</strong>
-          <span>Design Prototype</span>
+          <strong>图屿工作室</strong>
+          <span>设计原型</span>
         </div>
       </div>
 
-      <nav class="nav-section" aria-label="Production Flow">
-        <p>Production Flow</p>
+      <nav class="nav-section" aria-label="生产流程">
+        <p>生产流程</p>
         <a
           v-for="page in workflowPages"
           :key="page.slug"
           :href="`#/workflow/${page.slug}`"
           :class="{ active: activeKind === 'workflow' && activeSlug === page.slug }"
         >
-          {{ page.navTitle }}
+          {{ zhText(page.navTitle) }}
         </a>
       </nav>
 
-      <nav class="nav-section" aria-label="Design Modules">
-        <p>Design Modules</p>
+      <nav class="nav-section" aria-label="设计模块">
+        <p>设计模块</p>
         <a
           v-for="module in designModules"
           :key="module.slug"
           :href="`#/module/${module.slug}`"
           :class="{ active: activeKind === 'module' && activeSlug === module.slug }"
         >
-          {{ module.navTitle }}
+          {{ zhText(module.navTitle) }}
         </a>
       </nav>
     </aside>
@@ -49,26 +50,26 @@ defineProps<{
     <div class="main-frame">
       <header class="topbar">
         <div>
-          <strong>Tuyu Studio Design Visualization</strong>
-          <span>{{ prototypeRoot }}</span>
+          <strong>图屿工作室设计可视化</strong>
+          <span>{{ zhSourcePath(prototypeRoot) }}</span>
         </div>
         <div class="topbar-status">
-          <StatusChip label="source: docs/design only" tone="source" />
-          <StatusChip label="prototype: review server" tone="flow" />
-          <StatusChip label="no backend" tone="app" />
+          <StatusChip label="来源：仅 docs/design" tone="source" />
+          <StatusChip label="原型：评审服务" tone="flow" />
+          <StatusChip label="无后端" tone="app" />
         </div>
       </header>
 
       <main class="content-shell">
         <section class="source-strip">
           <div>
-            <span>Source Label</span>
-            <code>{{ sourceRoot }}</code>
+            <span>来源标识</span>
+            <code>{{ zhSourcePath(sourceRoot) }}</code>
           </div>
           <div class="stats-row">
             <div v-for="stat in prototypeStats" :key="stat.label" class="stat-pill">
               <strong>{{ stat.value }}</strong>
-              <span>{{ stat.label }}</span>
+              <span>{{ zhText(stat.label) }}</span>
             </div>
           </div>
         </section>
