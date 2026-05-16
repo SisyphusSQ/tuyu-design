@@ -41,15 +41,80 @@ export const workflowDiagrams = new Map<string, DiagramSpec>([
       'workflow-overview',
       'coverage',
       '生产闭环与设计覆盖图',
-      '这张图回答：7 个生产页面如何覆盖 10 个设计模块和 39 个子文档？',
+      '这张图回答：8 个生产页面如何覆盖 10 个设计模块和 40 个子文档？',
       ['README.md', 'details/README.md', 'details/00-product-scope-and-glossary/user-workflows.md'],
       [
-        item('7 个流程页', 'Overview -> Result Review', 'flow'),
+        item('8 个流程页', 'Overview -> Result Review', 'flow'),
         item('10 个模块页', '00 Product Scope -> 09 Delivery', 'source'),
-        item('39 个子文档', '以模块页卡片和锚点覆盖', 'app'),
+        item('40 个子文档', '以模块页卡片和锚点覆盖', 'app'),
         item('错误与恢复', '每条路径都有 failure path', 'risk'),
       ],
       ['能从总览跳到任意生产页和模块页。', '每个模块至少关联一个生产流程。', '子文档不拆独立页但必须可追溯。'],
+    ),
+  ],
+  [
+    'technology-stack',
+    diagram(
+      'workflow-technology-stack',
+      'swimlane',
+      '桌面应用技术分层图',
+      '这张图回答：Wails v2、Go service、Vue 工作台、Ant Design Vue、AntV、Provider 配置和系统密钥存储如何分工？',
+      [
+        'architecture/technology-stack.md',
+        'architecture/redacted-production-architecture.md',
+        'details/06-ai-runtime-and-provider-adapters/provider-configuration-and-credentials.md',
+        'details/07-frontend-workbench-experience/README.md',
+        'details/09-delivery-acceptance-and-test-plan/delivery-slices.md',
+        'details/09-delivery-acceptance-and-test-plan/test-strategy.md',
+      ],
+      [
+        item('Wails v2 Bridge', '窗口 / Go binding / event', 'flow'),
+        item('Go Services', 'ProjectStore / GraphDomain / RuntimeGateway', 'source'),
+        item('Vue Workbench', 'views / panels / task feedback', 'app'),
+        item('Provider Config', 'providerProfileId / credentialRef / keyring', 'risk'),
+      ],
+      [
+        'Wails v2 只作为 bridge 和桌面壳，不承接领域规则，并通过 facade / wrapper 保留 v3 迁移口。',
+        'Go service 可以在不启动 Wails 的情况下单元测试。',
+        '前端通过类型化 binding 和 DTO 调用后端，不直接读写本地项目文件。',
+        'Provider API key 只进入系统密钥存储，项目文件只保存 providerProfileId 和非敏感覆盖。',
+      ],
+      [
+        lane(
+          'UI',
+          [
+            item('Vue 工作台', '页面、面板、状态呈现', 'app'),
+            item('Ant Design Vue', '表单、表格、抽屉、通知', 'app'),
+          ],
+          'app',
+        ),
+        lane(
+          'Bridge',
+          [
+            item('Wails Binding', '类型化方法调用', 'flow'),
+            item('Event Stream', 'queued / running / failed', 'flow'),
+          ],
+          'flow',
+        ),
+        lane(
+          'Backend',
+          [
+            item('Go Service', '项目、图谱、任务、导出', 'source'),
+            item('DTO Contract', 'request / response / error', 'source'),
+            item('Keyring Access', 'credentialRef -> secret', 'risk'),
+          ],
+          'source',
+        ),
+        lane(
+          'Provider Config',
+          [
+            item('Global Profile', '~/.tuyu-studio/config', 'flow'),
+            item('Project Reference', 'providerProfileId only', 'app'),
+            item('Redaction Gate', 'package / audit / log scan', 'risk'),
+          ],
+          'risk',
+        ),
+      ],
     ),
   ],
   [
@@ -91,7 +156,7 @@ export const workflowDiagrams = new Map<string, DiagramSpec>([
     diagram(
       'workflow-creative-graph',
       'graph',
-      'Creative Graph 节点关系',
+      'Project Canvas/Creative Graph 节点关系',
       '这张图回答：图谱节点如何通过 refId、边和状态徽标承接生产关系？',
       ['details/02-creative-graph-domain-model/nodes-and-edges.md', 'details/02-creative-graph-domain-model/context-resolution.md', 'details/07-frontend-workbench-experience/canvas-interactions.md'],
       [
@@ -108,16 +173,17 @@ export const workflowDiagrams = new Map<string, DiagramSpec>([
     diagram(
       'workflow-shot-prompt',
       'state',
-      'Shot 与 PromptRun 状态推进',
-      '这张图回答：Shot 如何从 draft 进入 prompt_ready，运行失败如何恢复？',
-      ['details/04-script-shot-package-workflow/shot-card-lifecycle.md', 'details/02-creative-graph-domain-model/graph-state-machine.md', 'details/06-ai-runtime-and-provider-adapters/runtime-errors-and-retry.md'],
+      '脚本展开到 PromptRun 状态推进',
+      '这张图回答：脚本展开行如何进入 ShotCard，运行失败如何恢复？',
+      ['details/04-script-shot-package-workflow/script-to-scene.md', 'details/04-script-shot-package-workflow/shot-card-lifecycle.md', 'details/02-creative-graph-domain-model/graph-state-machine.md', 'details/06-ai-runtime-and-provider-adapters/runtime-errors-and-retry.md'],
       [
-        item('draft', '字段补齐前', 'neutral'),
+        item('expansion_ready', '脚本展开表可逐行确认', 'source'),
+        item('draft', 'ShotCard 字段补齐前', 'neutral'),
         item('context_ready', '上下文检查通过', 'app'),
         item('prompt_ready', 'Prompt 与 digest 一致', 'flow'),
-        item('failed / waiting_user', '运行失败或需补充', 'risk'),
+        item('blocked / waiting_user', '行字段缺失或需外发确认', 'risk'),
       ],
-      ['必填字段缺失不能进入 context_ready。', '输出契约失败不写正式对象。', '重试创建新 PromptRun。'],
+      ['展开表缺 source range 不能确认 Shot。', '必填字段缺失不能进入 context_ready。', '输出契约失败不写正式对象。', '重试创建新 PromptRun。'],
     ),
   ],
   [
@@ -125,7 +191,7 @@ export const workflowDiagrams = new Map<string, DiagramSpec>([
     diagram(
       'workflow-package-export',
       'swimlane',
-      '交接包导出泳道',
+      '交接包 fallback泳道',
       '这张图回答：用户、工作台、项目文件和审计如何协作生成 Package？',
       ['details/04-script-shot-package-workflow/package-export.md', 'details/06-ai-runtime-and-provider-adapters/provider-handoff-adapter.md', 'details/08-security-privacy-observability/path-guard-and-permissions.md'],
       [
@@ -300,7 +366,7 @@ export const moduleDiagrams = new Map<string, DiagramSpec>([
         item('Canvas', '双层生产组', 'flow'),
         item('Inspector + Bottom', '校验 / 任务 / 健康', 'risk'),
       ],
-      ['打开项目后直接进入图谱视图。', '双层组、输出节点和历史轨尺寸稳定。', '缺供应商能力时展示可降级入口。'],
+      ['打开项目后直接进入图谱视图。', '双层组、输出节点和历史轨尺寸稳定。', '缺provider能力时展示可降级入口。'],
       [
         lane('导航', [item('项目上下文', '顶部栏', 'source'), item('资产和剧本来源', '左侧面板', 'app')], 'source'),
         lane('创作', [item('图谱画布', '节点、边、双层组', 'flow'), item('检查器标签', '编辑和校验', 'app')], 'flow'),
@@ -339,7 +405,7 @@ export const moduleDiagrams = new Map<string, DiagramSpec>([
       '这张图回答：功能、数据、错误、恢复、审计和安全验收如何覆盖首个生产闭环？',
       ['details/09-delivery-acceptance-and-test-plan/delivery-slices.md', 'details/09-delivery-acceptance-and-test-plan/acceptance-matrix.md', 'details/09-delivery-acceptance-and-test-plan/test-strategy.md'],
       [
-        item('Functional', '7 production pages', 'flow'),
+        item('Functional', '8 production pages', 'flow'),
         item('Data', 'project / graph / package / result', 'source'),
         item('Errors', 'blocking + warning', 'risk'),
         item('Recovery', 'retry / relink / re-export', 'app'),

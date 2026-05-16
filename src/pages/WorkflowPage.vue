@@ -2,15 +2,19 @@
 import { computed } from 'vue'
 import AntvGraphView from '../components/AntvGraphView.vue'
 import AntvStatusChart from '../components/AntvStatusChart.vue'
+import ArchitectureConventions from '../components/ArchitectureConventions.vue'
+import DependencyMatrix from '../components/DependencyMatrix.vue'
 import DiagramPanel from '../components/DiagramPanel.vue'
 import PageHeader from '../components/PageHeader.vue'
 import RuleCard from '../components/RuleCard.vue'
+import StudioCanvas from '../components/StudioCanvas.vue'
+import StudioScriptExpansion from '../components/StudioScriptExpansion.vue'
 import TraceLinks from '../components/TraceLinks.vue'
 import WorkbenchFrame from '../components/WorkbenchFrame.vue'
 import WorkflowMap from '../components/WorkflowMap.vue'
 import { designModuleMap } from '../data/designModules'
 import { getWorkflowDiagram } from '../data/diagrams'
-import { productionStateData } from '../data/mockProject'
+import { productionStateData, scriptExpansionModel, studioCanvasModel } from '../data/mockProject'
 import type { TraceTarget, WorkflowPage } from '../types'
 
 const props = defineProps<{
@@ -45,9 +49,23 @@ const diagram = computed(() => getWorkflowDiagram(props.page.slug))
       :chips="page.sourceBasis"
     />
 
+    <StudioCanvas v-if="page.slug === 'overview'" :model="studioCanvasModel" />
+
     <WorkflowMap v-if="page.slug === 'overview'" />
 
     <DiagramPanel :spec="diagram" />
+
+    <StudioScriptExpansion v-if="page.slug === 'shot-prompt'" :model="scriptExpansionModel" />
+
+    <ArchitectureConventions
+      v-if="page.architectureConventions?.length"
+      :sections="page.architectureConventions"
+    />
+
+    <DependencyMatrix
+      v-if="page.dependencySections?.length"
+      :sections="page.dependencySections"
+    />
 
     <div v-if="page.slug === 'overview'" class="two-panel-grid">
       <AntvStatusChart :data="productionStateData" title="生产状态分布" />
@@ -64,7 +82,7 @@ const diagram = computed(() => getWorkflowDiagram(props.page.slug))
       </section>
     </div>
 
-    <WorkbenchFrame :sketch="page.sketch" />
+    <WorkbenchFrame v-if="page.slug !== 'overview'" :sketch="page.sketch" />
 
     <AntvGraphView v-if="page.slug === 'creative-graph'" />
 

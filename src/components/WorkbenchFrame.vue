@@ -76,7 +76,7 @@ defineProps<{
 
       <aside class="capability-panel">
         <div class="panel-heading compact">
-          <h3>供应商能力</h3>
+          <h3>Provider 能力</h3>
           <StatusChip label="按能力降级" tone="flow" />
         </div>
         <ul class="queue-list">

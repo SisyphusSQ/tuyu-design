@@ -55,7 +55,7 @@ const productionFrameSketch = (
 
 const moduleProductionFrame: ProductionFrame = {
   title: '外层生产组：可运行上下文',
-  intent: '生产意图、输出目标、供应商能力和历史归属都在外层',
+  intent: '生产意图、输出目标、provider能力和历史归属都在外层',
   referenceGroup: {
     title: '内层参考组：输入集合',
     role: '动作节奏、角色身份、场景素材',
@@ -76,7 +76,7 @@ const moduleProductionFrame: ProductionFrame = {
   taskStates: [
     { label: '文本理解', meta: '提示词优化和剧本分镜可运行', tone: 'app' },
     { label: '媒体理解缺失', meta: '图片/视频分析降级为人工说明', tone: 'risk' },
-    { label: '视频生成', meta: '接入生成供应商后启用', tone: 'flow' },
+    { label: '视频生成', meta: '接入生成provider后启用', tone: 'flow' },
   ],
   storyboardRows: [
     { label: '候选镜号 1', meta: '中景 / 推 / 建立空间', tone: 'source' },
@@ -103,7 +103,7 @@ const doc = (
   recovery,
 })
 
-export const designModules = [
+export const designModules: DesignModule[] = [
   {
     id: '00',
     slug: 'product-scope',
@@ -112,9 +112,9 @@ export const designModules = [
     navTitle: '00 Product Scope',
     readmeSourcePath: source('details/00-product-scope-and-glossary/README.md'),
     summary:
-      '图屿是本地优先的 AI 影视前期制作与生成交接工作台，核心边界是镜头级生产资料能被组织、编译、交接、回收和追溯。',
+      '图屿是 Canvas-first 私有 AI 视频创作 Studio，核心边界是人和 Agent 的画布操作能被组织、运行、回收、评审和追溯。',
     sourceTruth: [
-      '产品名归产品，供应商归适配器；核心文档不固化外部平台名称。',
+      '产品名归产品，provider归适配器；核心文档不固化外部平台名称。',
       '生产闭环优先：输入、输出、状态、失败语义、恢复方式、追溯记录和验收标准都要可见。',
       '视频生成默认是生成包交接与结果回收，不是静默后台提交外部平台。',
     ],
@@ -125,7 +125,7 @@ export const designModules = [
         'Product Boundary',
         '产品定位、目标用户、能力边界、非目标和功能归属判断。',
         [
-          '所有生产产物必须能回到 Project、Creative Graph、Shot、PromptRun、GenerationPackage、Take 和 Review Status。',
+          '所有生产产物必须能回到 Project、Project Canvas/Creative Graph、Shot、PromptRun、GenerationPackage、Take 和 Review Status。',
           '外部能力只通过 provider/profile/adapter 抽象进入设计。',
           '不强化镜头级生产闭环的能力默认不进入核心产品范围。',
         ],
@@ -136,7 +136,7 @@ export const designModules = [
         '00-product-scope-and-glossary',
         'user-workflows.md',
         'User Workflows',
-        '新项目、资产导入、提示词运行、交接包导出、结果回收主路径。',
+        '新项目、资产导入、提示词运行、交接包 fallback、结果回收主路径。',
         [
           '五条主路径都要从触发动作推进到可见状态。',
           '每一步产生明确项目状态，不能只停留在临时界面状态。',
@@ -287,11 +287,11 @@ export const designModules = [
     id: '02',
     slug: 'creative-graph',
     index: '02',
-    title: 'Creative Graph',
-    navTitle: '02 Creative Graph',
+    title: 'Project Canvas/Creative Graph',
+    navTitle: '02 Project Canvas/Creative Graph',
     readmeSourcePath: source('details/02-creative-graph-domain-model/README.md'),
     summary:
-      'Creative Graph 用节点、边和双层生产组表达创作对象、上下文、任务、输出和历史之间的生产关系；图谱保存画布结构和展示摘要，领域对象由各自目录负责。',
+      'Project Canvas/Creative Graph 用节点、边和双层生产组表达创作对象、上下文、任务、输出和历史之间的生产关系；图谱保存画布结构和展示摘要，领域对象由各自目录负责。',
     sourceTruth: [
       'GraphNode.refId 指向领域对象，节点不是领域数据唯一真相。',
       '生产组是可运行画布上下文，参考组是输入集合，二者不替代镜头、提示词或资产。',
@@ -363,7 +363,7 @@ export const designModules = [
     recoverySemantics: ['通过占位、重新绑定、重新导出和新 run 保留历史，不覆盖旧证据。'],
     workflowRefs: ['overview', 'creative-graph', 'shot-prompt', 'package-export', 'result-review'],
     sketch: productionFrameSketch(
-      'Creative Graph Canvas',
+      'Project Canvas/Creative Graph Canvas',
       'Graph Domain',
       moduleProductionFrame,
     ),
@@ -510,7 +510,7 @@ export const designModules = [
       doc(
         '04-script-shot-package-workflow',
         'package-export.md',
-        'Package Export',
+        'Handoff Fallback',
         '交接包目录、manifest、提示词、参考图和清单。',
         [
           'Package 包含 manifest、prompt、参考图、连续性说明和引用清单。',
@@ -669,10 +669,12 @@ export const designModules = [
     navTitle: '06 Runtime Adapters',
     readmeSourcePath: source('details/06-ai-runtime-and-provider-adapters/README.md'),
     summary:
-      '运行网关负责任务创建、队列、取消、状态、运行记录和错误映射；供应商能力拆成理解层与生成层，图片、视频和交接能力都通过能力声明进入工作台。',
+      '运行网关负责任务创建、队列、取消、状态、运行记录和错误映射；provider能力拆成理解层与生成层，图片、视频和交接能力都通过能力声明进入工作台。',
     sourceTruth: [
-      '外部供应商不进入产品主叙事，只通过配置、适配器和能力声明表达。',
+      '外部provider不进入产品主叙事，只通过配置、适配器和能力声明表达。',
       '理解能力与生成能力分层声明；缺能力时任务降级而不是删除生产组。',
+      'Provider profile 默认全局复用，项目只保存 providerProfileId 和非敏感覆盖。',
+      'API key、token、refresh token 和 secret 只进入系统密钥存储，不进入项目、包、日志或审计。',
       '任务运行必须具备进度、取消、失败重试、超时、可读错误和运行记录。',
       '重试创建新 run 或新产物版本，不覆盖历史。',
     ],
@@ -700,7 +702,7 @@ export const designModules = [
           'adapter 负责 provider 错误到产品错误语义的映射。',
           '失败不污染正式绑定和连续性规则。',
         ],
-        ['供应商限流显示等待或重试。', '输出缺失不创建资产。'],
+        ['provider限流显示等待或重试。', '输出缺失不创建资产。'],
         ['重试创建新 run。', '输出有效后再绑定到 Shot、Character、Scene 或 Prompt。'],
       ),
       doc(
@@ -709,12 +711,26 @@ export const designModules = [
         'Provider Handoff Adapter',
         '视频生成交接 profile、包格式、上传清单和结果绑定。',
         [
-          '供应商配置声明文本、图片、视频理解能力和图片、视频生成能力。',
+          'provider配置声明文本、图片、视频理解能力和图片、视频生成能力。',
           '交接 adapter 只生成目标 profile 可消费的包和清单；接入 apiSubmit 后才自动提交。',
-          '交接或供应商尝试状态由用户动作或适配器事件推进。',
+          '交接或provider尝试状态由用户动作或适配器事件推进。',
         ],
-        ['供应商能力缺失时禁用对应任务。', '外部写入未确认时阻断写入。'],
-        ['切换供应商或降级为手动交接。', '用户完成外部动作后手动标记已交接。'],
+        ['provider能力缺失时禁用对应任务。', '外部写入未确认时阻断写入。'],
+        ['切换provider或降级为手动交接。', '用户完成外部动作后手动标记已交接。'],
+      ),
+      doc(
+        '06-ai-runtime-and-provider-adapters',
+        'provider-configuration-and-credentials.md',
+        'Provider Configuration and Credentials',
+        '全局 provider profile、项目引用、项目非敏感覆盖、credentialRef 和系统密钥存储。',
+        [
+          '全局 profile 放在 ~/.tuyu-studio/config/provider_profiles，供多项目复用。',
+          '项目只保存 providerProfileId；项目级 override 只能覆盖模型、质量、能力启用等非敏感字段。',
+          'credentialRef 由 Go 后端解析到系统密钥存储，API key、token、refresh token 不落入项目文件。',
+          '交接包、支持包、审计、日志和测试 fixture 写入前必须经过凭据泄漏扫描。',
+        ],
+        ['provider_profile_missing。', 'provider_credential_missing。', 'provider_override_rejected。', 'credential_leak_detected。'],
+        ['创建或选择全局 profile。', '在系统密钥存储中配置 credentialRef。', '移除项目敏感覆盖后重试。', '缺凭据时降级为手动交接。'],
       ),
       doc(
         '06-ai-runtime-and-provider-adapters',
@@ -731,21 +747,22 @@ export const designModules = [
       ),
     ],
     invariants: [
-      '供应商配置可替换，不改变镜头、生成交接包、提示词运行的核心语义。',
-      'Codex 应用服务、DeepSeek 类文本接口和 Seekdance 类生成接口都只以能力声明进入设计。',
+      'provider配置可替换，不改变镜头、生成交接包、提示词运行的核心语义。',
+      '多模态理解运行时、文本理解运行时和视频生成运行时都只以能力声明进入设计。',
+      'API key 不进入项目目录、交接包、审计、运行记录、日志、支持包或前端 bundle。',
       '运行错误不覆盖上一份可用产物。',
       '外部传输需要任务预览和用户确认。',
     ],
-    errorSemantics: ['运行错误需要错误码、可重试性、用户提示、技术详情和调试记录。'],
-    recoverySemantics: ['取消、重试、重新配置 profile、重新导出或进入诊断视图。'],
+    errorSemantics: ['运行错误需要错误码、可重试性、用户提示、技术详情和调试记录。', 'Provider 配置错误要区分 profile 缺失、凭据缺失、非法覆盖和凭据泄漏。'],
+    recoverySemantics: ['取消、重试、重新配置 profile、补 credentialRef、重新导出、降级为手动交接或进入诊断视图。'],
     workflowRefs: ['shot-prompt', 'package-export', 'result-review'],
     sketch: sketch(
       'Runtime Queue',
       'Adapters',
       'Runs',
       [
-        { label: '理解供应商', meta: '文本可用 / 图片视频可降级', tone: 'source' },
-        { label: '生成供应商', meta: '图片可用 / 视频待接入', tone: 'flow' },
+        { label: '理解provider', meta: '文本可用 / 图片视频可降级', tone: 'source' },
+        { label: '生成provider', meta: '图片可用 / 视频待接入', tone: 'flow' },
         { label: '运行历史 18', meta: '历史归属输出版本', tone: 'app' },
       ],
       [
@@ -755,7 +772,7 @@ export const designModules = [
       ],
       [
         { label: 'queue depth', meta: '3', tone: 'flow' },
-        { label: '视频生成', meta: '配置生成供应商后启用', tone: 'app' },
+        { label: '视频生成', meta: '配置生成provider后启用', tone: 'app' },
       ],
     ),
   },
@@ -767,7 +784,7 @@ export const designModules = [
     navTitle: '07 Workbench UX',
     readmeSourcePath: source('details/07-frontend-workbench-experience/README.md'),
     summary:
-      '工作台围绕项目导航、创作图谱画布、双层生产组、Inspector、任务面板和状态栏组织，让用户高效创作、编辑、检查和交接。',
+      '工作台围绕项目导航、Project Canvas画布、双层生产组、Inspector、任务面板和状态栏组织，让用户高效创作、编辑、检查和交接。',
     sourceTruth: [
       '画布节点和双层组视觉要展示类型、状态、错误、连续性徽标和历史摘要。',
       '外层生产组是可运行生产上下文；内层参考组是输入引用集合。',
@@ -781,7 +798,7 @@ export const designModules = [
         'Workspace Layout',
         '项目导航、画布、资产栏、Inspector、任务面板和状态栏。',
         [
-          '主工作区是 Creative Graph，不是传统剪辑时间线。',
+          '主工作区是 Project Canvas/Creative Graph，不是传统剪辑时间线。',
           '左侧项目导航、中央画布、右侧 Inspector/任务面板协同。',
           '状态栏展示保存、健康、运行和隐私状态。',
         ],

@@ -18,12 +18,12 @@ defineProps<{
         <div class="brand-mark">屿</div>
         <div>
           <strong>图屿工作室</strong>
-          <span>设计原型</span>
+          <span>Studio Canvas</span>
         </div>
       </div>
 
-      <nav class="nav-section" aria-label="生产流程">
-        <p>生产流程</p>
+      <nav class="nav-section" aria-label="Studio 页面">
+        <p>Studio 页面</p>
         <a
           v-for="page in workflowPages"
           :key="page.slug"
@@ -50,13 +50,13 @@ defineProps<{
     <div class="main-frame">
       <header class="topbar">
         <div>
-          <strong>图屿工作室设计可视化</strong>
+          <strong>图屿 Studio 视觉原型</strong>
           <span>{{ zhSourcePath(prototypeRoot) }}</span>
         </div>
         <div class="topbar-status">
           <StatusChip label="来源：仅 docs/design" tone="source" />
-          <StatusChip label="原型：评审服务" tone="flow" />
-          <StatusChip label="无后端" tone="app" />
+          <StatusChip label="Project Canvas" tone="flow" />
+          <StatusChip label="静态评审" tone="app" />
         </div>
       </header>
 

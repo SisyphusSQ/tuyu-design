@@ -63,6 +63,26 @@ export interface WorkbenchSketch {
   productionFrame?: ProductionFrame
 }
 
+export interface DependencyRow {
+  name: string
+  stage: string
+  purpose: string
+  tone?: Tone
+}
+
+export interface DependencySection {
+  title: string
+  description: string
+  rows: DependencyRow[]
+}
+
+export interface ArchitectureConvention {
+  title: string
+  summary: string
+  bullets: string[]
+  tone?: Tone
+}
+
 export interface WorkflowPage {
   id: string
   slug: string
@@ -76,6 +96,8 @@ export interface WorkflowPage {
   recoveryActions: string[]
   moduleRefs: string[]
   sketch: WorkbenchSketch
+  dependencySections?: DependencySection[]
+  architectureConventions?: ArchitectureConvention[]
 }
 
 export interface SubDocument {
@@ -123,6 +145,123 @@ export interface StatusDatum {
   category: string
   value: number
   type: string
+}
+
+export type StudioThemeMode = 'dark' | 'warm-light'
+
+export type StudioProviderMode = 'internal_provider' | 'external_agent'
+
+export type CanvasNodeCategory =
+  | 'source'
+  | 'concept'
+  | 'continuity'
+  | 'production'
+  | 'output'
+  | 'review'
+  | 'organizer'
+  | 'handoff'
+
+export type CanvasNodeStatus = 'ready' | 'running' | 'blocked' | 'success' | 'stale' | 'candidate'
+
+export type CanvasNodeSource = 'human' | 'agent' | 'system' | 'imported'
+
+export interface StudioCanvasNode {
+  id: string
+  title: string
+  subtitle: string
+  category: CanvasNodeCategory
+  status: CanvasNodeStatus
+  source: CanvasNodeSource
+  x: number
+  y: number
+  width: number
+  height: number
+  badges: string[]
+  meta: string
+}
+
+export interface StudioCanvasEdge {
+  id: string
+  source: string
+  target: string
+  label: string
+  status?: CanvasNodeStatus
+}
+
+export interface StudioCanvasFrame {
+  id: string
+  title: string
+  subtitle: string
+  x: number
+  y: number
+  width: number
+  height: number
+  status: CanvasNodeStatus
+}
+
+export interface StudioCanvasEvent {
+  id: string
+  actor: 'Human' | 'Agent' | 'System'
+  action: string
+  target: string
+  time: string
+  tone: Tone
+}
+
+export interface StudioCanvasModel {
+  title: string
+  projectName: string
+  theme: StudioThemeMode
+  providerMode: StudioProviderMode
+  viewport: {
+    zoom: number
+    x: number
+    y: number
+  }
+  grid: {
+    size: number
+    opacity: number
+  }
+  nodes: StudioCanvasNode[]
+  edges: StudioCanvasEdge[]
+  frames: StudioCanvasFrame[]
+  selectedNodeId: string
+  leftRail: SketchItem[]
+  healthItems: SketchItem[]
+  assets: SketchItem[]
+  events: StudioCanvasEvent[]
+}
+
+export type ScriptExpansionStatus = 'candidate' | 'ready' | 'stale' | 'blocked'
+
+export interface ScriptExpansionRoleRef {
+  name: string
+  description: string
+  referenceLabel: string
+  tone: Tone
+}
+
+export interface ScriptExpansionRow {
+  id: string
+  index: number
+  durationSeconds: number
+  visualDescription: string
+  roles: ScriptExpansionRoleRef[]
+  sourceRange: string
+  status: ScriptExpansionStatus
+  action: string
+}
+
+export interface ScriptExpansionModel {
+  title: string
+  subtitle: string
+  viewMode: string
+  zoom: number
+  actions: SketchItem[]
+  rows: ScriptExpansionRow[]
+  selectedRowId: string
+  healthItems: SketchItem[]
+  thumbnails: SketchItem[]
 }
 
 export type DiagramKind = 'flow' | 'state' | 'graph' | 'swimlane' | 'lineage' | 'coverage'

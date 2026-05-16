@@ -12,7 +12,7 @@ const sketch = (
   eyebrow,
   activeTab,
   tabs: ['Project', 'Graph', 'Assets', 'Runs', 'Health'],
-  boardTitle: 'Semi-real App Sketch',
+  boardTitle: 'Studio App Surface',
   boardItems,
   inspectorTitle: 'Inspector',
   inspectorItems,
@@ -20,7 +20,7 @@ const sketch = (
   queueItems,
   footerItems: [
     { label: 'source: docs/design', tone: 'source' },
-    { label: 'prototype: review-only', tone: 'flow' },
+    { label: 'prototype: static review', tone: 'flow' },
     { label: 'runtime: no backend', tone: 'app' },
   ],
 })
@@ -31,7 +31,7 @@ const productionFrameSketch = (
   frame: ProductionFrame,
   footerItems: WorkbenchSketch['footerItems'] = [
     { label: 'source: docs/design', tone: 'source' },
-    { label: 'prototype: review-only', tone: 'flow' },
+    { label: 'prototype: static review', tone: 'flow' },
     { label: 'runtime: no backend', tone: 'app' },
   ],
 ): WorkbenchSketch => ({
@@ -63,7 +63,7 @@ const balconyFrame: ProductionFrame = {
     ],
     notes: '用户备注只作为 data 包装，不覆盖锁定规则。',
   },
-  outputNode: { label: '输出节点', meta: '文本 / 图片 / 视频按供应商能力启用', tone: 'flow' },
+  outputNode: { label: '输出节点', meta: '文本 / 图片 / 视频按provider能力启用', tone: 'flow' },
   requiredCapabilities: ['textUnderstanding', 'imageUnderstanding', 'videoUnderstanding', 'imageGeneration', 'videoGeneration'],
   historySummary: [
     { label: '当前', meta: '第 3 版', tone: 'app' },
@@ -73,7 +73,7 @@ const balconyFrame: ProductionFrame = {
   taskStates: [
     { label: '提示词优化', meta: '需要文本理解，可运行', tone: 'app' },
     { label: '图片/视频理解', meta: '缺能力时降级为人工说明或手动分镜', tone: 'risk' },
-    { label: '生成视频', meta: '接入视频生成供应商后启用', tone: 'flow' },
+    { label: '生成视频', meta: '接入视频生成provider后启用', tone: 'flow' },
   ],
   storyboardRows: [
     { label: '镜号 1', meta: '中景 / 推 / 建立空间和人物位置', tone: 'source' },
@@ -82,39 +82,39 @@ const balconyFrame: ProductionFrame = {
   ],
 }
 
-export const workflowPages = [
+export const workflowPages: WorkflowPage[] = [
   {
     id: 'wf-overview',
     slug: 'overview',
-    title: 'Overview',
-    navTitle: 'Overview',
+    title: 'App Shell / Project Canvas',
+    navTitle: 'App Shell',
     summary:
-      '从本地项目创建开始，图屿把剧本、资产、Creative Graph、指令栈、运行记录、交接包和结果评审组织成可追溯的生产闭环。',
+      '图屿 Studio 第一屏是 Project Canvas：人类和 Agent 都通过 Shared Canvas Core 操作同一张无限画布，把剧本、资产、Shot、Prompt、Run、Review 和 handoff fallback 收敛为可追溯的生产闭环。',
     sourceBasis: [
       '主数据流来自 architecture/redacted-production-architecture.md。',
-      '状态链路来自 details/README.md 的跨文档不变量和各模块状态机。',
-      '本原型只解释设计，不实现真实产品功能。',
+      'Canvas-first 口径来自 details/00-product-scope-and-glossary/product-boundary.md。',
+      '画布、Dark / 暖浅模式和 Agent 操作来自 details/07-frontend-workbench-experience。',
     ],
     userActions: [
-      '创建或打开本地项目。',
-      '导入剧本、角色、场景、道具和参考图。',
-      '在 Creative Graph 中建立 Shot、Prompt、Package 和 Result 关系。',
-      '预览指令栈，导出生成交接包，回收外部结果并评审。',
+      '打开本地项目后直接进入 Project Canvas。',
+      '插入 Blueprint，拖入剧本、角色、场景、道具和参考图。',
+      '人类直接编辑节点、Frame、Inspector、Shot Card 和 Review。',
+      'Agent 读取 Skill 并通过 canvas.* / run.start / result.bind 命令创建候选、连线和写回结果。',
     ],
     systemWrites: [
-      'project.json、graph.json、assets index、prompts/runs、packages、audit。',
-      'Shot、PromptRun、GenerationPackage、VideoResult 和 Review Status。',
-      '健康检查、包校验、错误记录和恢复记录。',
+      'ProjectCanvas viewport、theme、grid、nodes、edges、frames、blueprintInstances。',
+      'Studio Command、Run/Event/Audit、Asset binding、PromptRun、Take 和 Review Status。',
+      'Handoff Fallback 只作为 handoff/fallback 写入 manifest、上传清单和相对路径引用。',
     ],
     blockers: [
-      '跨项目引用、绝对路径泄漏、路径逃逸或缺少用户确认。',
-      '上下文缺失、连续性冲突、非法关系、dirty Shot 或 stale Package。',
-      '输出契约校验失败、包引用缺失、结果绑定不明确。',
+      'Agent 越过 selection scope、直接写文件、读取越界路径或访问凭据。',
+      '上下文缺失、连续性冲突、非法关系、dirty Shot、stale Prompt 或输出契约失败。',
+      '外发未确认、provider mode 不支持、结果绑定不明确。',
     ],
     recoveryActions: [
-      '运行健康检查并定位受影响对象。',
-      '重新定位资产、补齐 Shot 字段、重编译上下文或重新导出包。',
-      '以新 PromptRun、Package 版本或 Take 保留历史证据。',
+      '保留 Agent 候选，用户可接受、修改后接受、拒绝或接管。',
+      '重新定位资产、补齐 Shot 字段、重编译上下文或切换 ProviderMode。',
+      '以新 PromptRun、Package 版本或 Take 保留历史证据；扣费/积分只显示占位。',
     ],
     moduleRefs: [
       'product-scope',
@@ -134,8 +134,8 @@ export const workflowPages = [
       'Project',
       [
         { label: 'Project', meta: 'schema ok', tone: 'source' },
-        { label: 'Creative Graph', meta: '18 nodes / 22 edges', tone: 'app' },
-        { label: 'Package Export', meta: '2 ready / 1 stale', tone: 'flow' },
+        { label: 'Project Canvas/Creative Graph', meta: '18 nodes / 22 edges', tone: 'app' },
+        { label: 'Handoff Fallback', meta: '2 ready / 1 stale', tone: 'flow' },
         { label: 'Privacy Gate', meta: 'external task needs confirm', tone: 'risk' },
       ],
       [
@@ -149,6 +149,264 @@ export const workflowPages = [
         { label: 'result review', meta: 'waiting take', tone: 'flow' },
       ],
     ),
+  },
+  {
+    id: 'wf-technology-stack',
+    slug: 'technology-stack',
+    title: 'Technology Stack',
+    navTitle: 'Technology Stack',
+    summary:
+      '技术栈页把最终产品的 Wails 桌面壳、Go 后端、Vue 3 + TypeScript 工作台、Ant Design Vue 控件体系和 AntV 图谱图表拆成清晰职责，避免把桌面 bridge、领域后端和前端状态混在一起。',
+    sourceBasis: [
+      'architecture/technology-stack.md',
+      'architecture/redacted-production-architecture.md',
+      'details/06-ai-runtime-and-provider-adapters/provider-configuration-and-credentials.md',
+      'details/07-frontend-workbench-experience/README.md',
+      'details/09-delivery-acceptance-and-test-plan/delivery-slices.md',
+      'details/09-delivery-acceptance-and-test-plan/test-strategy.md',
+    ],
+    userActions: [
+      '确认 Wails 只负责桌面壳、Go 方法暴露、事件推送和打包，不承接领域规则。',
+      '确认 Go service 是项目、图谱、资产、指令、运行、交接包、结果和审计的执行真相。',
+      '确认 Vue 工作台只展示、编辑、预览、订阅事件和调用类型化 binding。',
+      '确认 Ant Design Vue 用于表单、表格、抽屉、弹窗、通知、上传和进度，AntV 用于画布和图表。',
+    ],
+    systemWrites: [
+      '切片 0 先打通 Wails app、Go service 分层、Vue App Shell、TypeScript binding 和基础事件流。',
+      'Go 后端输出稳定 DTO：请求、响应、错误、事件分开，不把内部领域对象完整裸露给前端。',
+      '任务运行、导出、健康检查和迁移走事件化模型，写入项目运行记录和审计。',
+      'Provider profile 放在全局配置，项目只保存 providerProfileId 和非敏感覆盖；密钥只进系统密钥存储。',
+      '首个生产闭环坚持本地文件项目制，SQLite 或索引只作为后续缓存优化。',
+    ],
+    blockers: [
+      '前端直接读写本机路径、绕过 Go service 修改项目文件。',
+      'Wails app struct 直接堆文件系统、图谱、运行时逻辑，导致后端不可单测。',
+      '普通字符串错误让前端猜错误类型，无法支撑用户提示、技术详情和调试记录三层展示。',
+      '把 UI store、Pinia 或组件状态当作领域持久 truth。',
+      'API key、token、refresh token 或 secret 出现在项目目录、交接包、审计、日志或前端 bundle。',
+    ],
+    recoveryActions: [
+      '把 Wails 方法收敛为 thin binding，领域逻辑下沉到 ProjectStore、GraphDomain、RuntimeGateway 等 service。',
+      '补 DTO 和错误码，再让前端只消费可展示摘要、版本、状态和下一步动作。',
+      '缺 provider profile 时引导创建全局 profile；缺 credentialRef 时打开系统密钥存储配置。',
+      '用 Wails bridge smoke、TypeScript 类型检查、Go 单元测试和跨平台 App Shell smoke 做切片 0 验收。',
+      '画布性能、文件选择、拖拽、快捷键和长文本布局进入跨平台验证清单。',
+    ],
+    moduleRefs: [
+      'local-storage',
+      'creative-graph',
+      'runtime-adapters',
+      'workbench-ux',
+      'security-observability',
+      'delivery-acceptance',
+    ],
+    sketch: sketch(
+      'Technology Stack Console',
+      'Implementation layers',
+      'Project',
+      [
+        { label: 'Wails Bridge', meta: '窗口、绑定、事件、打包', tone: 'flow' },
+        { label: 'Go Services', meta: '项目、图谱、资产、任务、审计', tone: 'source' },
+        { label: 'Vue Workbench', meta: '页面、面板、预览、运行反馈', tone: 'app' },
+        { label: 'AntV Canvas', meta: '图谱画布与生产状态图表', tone: 'risk' },
+      ],
+      [
+        { label: 'DTO Contract', meta: 'request / response / error / event', tone: 'source' },
+        { label: 'UI Components', meta: 'Ant Design Vue 控件密度', tone: 'app' },
+        { label: 'Persistent Truth', meta: '本地项目文件', tone: 'flow' },
+      ],
+      [
+        { label: 'slice 0', meta: 'App Shell + binding smoke', tone: 'flow' },
+        { label: 'contract check', meta: 'Go test + vue-tsc', tone: 'source' },
+        { label: 'webview smoke', meta: 'macOS / Windows / Linux', tone: 'risk' },
+      ],
+    ),
+    architectureConventions: [
+      {
+        title: 'Wails v2 基线',
+        summary: '首个实现按 Wails v2 落地，但把 v2 细节限制在 facade 和前端 API wrapper。',
+        tone: 'flow',
+        bullets: [
+          'go.mod 固定 github.com/wailsapp/wails/v2。',
+          'Go service 不 import Wails，前端页面和组件不 import wailsjs/go。',
+          '未来迁移 v3 时优先替换 facade 注册和 wrapper import，DTO 与业务组件不重写。',
+        ],
+      },
+      {
+        title: '后端三层',
+        summary: 'Go 后端按 Wails App Facade、Application Services、Domain / Infrastructure 分层。',
+        tone: 'source',
+        bullets: [
+          'Facade 只做入口、DTO 转换、service 调用和事件发送。',
+          'Application Services 编排 Project、Graph、Asset、Runtime、Package、Result、Audit。',
+          'Domain / Infrastructure 维护规则、状态机、文件、keyring、HTTP、CLI 和图片处理。',
+        ],
+      },
+      {
+        title: '前端四层',
+        summary: '页面、业务组件、API wrapper、UI session store 分开，组件不直连 Wails。',
+        tone: 'app',
+        bullets: [
+          'View / Page 负责路由、布局和把用户动作转成 command。',
+          'Feature Components 负责局部交互，可调用 composable 或 API wrapper。',
+          'Pinia 只保存选择态、面板、过滤器、运行队列投影和错误抽屉。',
+        ],
+      },
+      {
+        title: 'DTO 与错误契约',
+        summary: '领域对象不裸露给前端，业务失败返回结构化 AppErrorDTO。',
+        tone: 'risk',
+        bullets: [
+          'Command DTO 表达用户动作，View DTO 表达 UI 投影，Event DTO 表达长任务同步。',
+          'AppErrorDTO 至少包含 code、severity、retryable、target、userMessage、recoveryActions、correlationId。',
+          'provider_credential_missing 等业务错误是 DTO；transport_error 才代表 binding 或系统异常。',
+        ],
+      },
+      {
+        title: 'Runtime / Provider 边界',
+        summary: 'RuntimeGateway 管图屿任务生命周期，ProviderAdapter 只做外部能力翻译。',
+        tone: 'source',
+        bullets: [
+          'RuntimeGateway 创建 run / attempt、推事件、处理取消重试、写 audit 和状态。',
+          'ProviderAdapter 构造 prompt、payload、package、submit/poll/download，但不写项目文件。',
+          'ProviderAttempt 状态不塞进 GenerationPackage.status，Package 状态只表达交接包生命周期。',
+        ],
+      },
+      {
+        title: '存储与审计',
+        summary: '项目文件是 truth，ProjectStore 是唯一正式写入口，SQLite 只做可重建缓存。',
+        tone: 'flow',
+        bullets: [
+          'PathGuard 是所有本机路径前置门禁，处理越界、符号链接逃逸和授权范围。',
+          '写入走校验、tmp、fsync、rename、audit；危险操作在 audit 不可写时阻断。',
+          'fsnotify 只触发 dirty/stale、健康检查和提示，不自动修复项目 truth。',
+        ],
+      },
+      {
+        title: '事件与运行队列',
+        summary: '后端是运行状态 truth，前端运行队列是可重建事件投影。',
+        tone: 'app',
+        bullets: [
+          '长任务状态固定 queued、running、waiting_user、blocked、completed、failed、cancelled。',
+          '事件带 eventId 或序号，前端去重并在重连后从 run records 恢复。',
+          '取消和重试由后端裁决，重试创建新 run，不覆盖历史。',
+        ],
+      },
+      {
+        title: 'Provider 凭据生命周期',
+        summary: 'Provider Settings 是全局设置，项目只保存 providerProfileId 和非敏感 override。',
+        tone: 'risk',
+        bullets: [
+          'credentialRef 指向系统 keyring，前端不展示、不持久化真实 API key。',
+          'Key rotation 更新 keyring value，不改项目文件和 credentialRef。',
+          'Profile 导入导出只包含脱敏元数据，迁移到新机器后显式提示缺 profile 或 credential。',
+        ],
+      },
+      {
+        title: '组件与测试门禁',
+        summary: 'Ant Design Vue 管控件一致性，AntV 管图谱/统计；每个切片都有可执行验证。',
+        tone: 'neutral',
+        bullets: [
+          '表单、列表、确认、反馈优先使用 Ant Design Vue；G6 不作为领域模型。',
+          'Go service 单测不启动 Wails，provider adapter 用 fake transport。',
+          '每个切片至少通过 go test、vue-tsc、前端 build、Wails bridge smoke 和相关安全测试。',
+        ],
+      },
+    ],
+    dependencySections: [
+      {
+        title: 'Frontend SDK',
+        description:
+          '前端只负责工作台 UI、状态编排、类型化 binding 调用和可视化呈现，不直接接触本机文件系统、AI 密钥或provider SDK。',
+        rows: [
+          { name: 'vue', stage: '切片 0 必需', purpose: 'Vue 3 Composition API，承载工作台页面、面板和组件状态。', tone: 'app' },
+          { name: 'typescript', stage: '切片 0 必需', purpose: '前端类型约束、DTO 消费和 Wails 绑定类型检查。', tone: 'app' },
+          { name: 'vite', stage: '切片 0 必需', purpose: '开发服务器、前端构建和 Wails WebView 资源打包。', tone: 'app' },
+          { name: '@vitejs/plugin-vue', stage: '切片 0 必需', purpose: '让 Vite 编译 Vue 单文件组件。', tone: 'app' },
+          { name: 'vue-tsc / @vue/tsconfig', stage: '切片 0 必需', purpose: 'SFC 类型检查和 Vue 项目 TypeScript 基线配置。', tone: 'app' },
+          { name: '@types/node', stage: '切片 0 必需', purpose: '构建配置和工具脚本使用 Node 类型。', tone: 'neutral' },
+          { name: 'vue-router', stage: '首批必需', purpose: '项目、图谱、资产、运行、健康等工作台视图路由。', tone: 'flow' },
+          { name: 'pinia', stage: '首批必需', purpose: '保存 UI 会话状态、选择态、过滤器和任务面板状态；不作为领域持久 truth。', tone: 'flow' },
+          { name: 'ant-design-vue', stage: '首批必需', purpose: '表单、表格、抽屉、弹窗、通知、上传、进度和空状态控件。', tone: 'flow' },
+          { name: '@ant-design/icons-vue', stage: '首批必需', purpose: '工具栏、状态提示、导航和操作按钮图标。', tone: 'flow' },
+          { name: '@antv/g6', stage: '首批必需', purpose: 'Project Canvas/Creative Graph 画布、节点关系、生产组和状态徽标可视化。', tone: 'source' },
+          { name: '@antv/g2', stage: '首批必需', purpose: '生产状态、模块覆盖、运行健康和验收趋势图表。', tone: 'source' },
+          { name: '@vueuse/core', stage: '建议首批', purpose: '窗口尺寸、快捷键、拖拽、持久化 UI 偏好和事件监听组合式工具。', tone: 'app' },
+          { name: 'dayjs', stage: '建议首批', purpose: '运行记录、审计事件、导出包和健康报告的时间展示。', tone: 'neutral' },
+          { name: 'vue-virtual-scroller', stage: '后续可选', purpose: '大量资产、镜头、运行历史和审计日志列表虚拟滚动。', tone: 'neutral' },
+          { name: 'vitest / @vue/test-utils', stage: '验证必需', purpose: '组合式逻辑、组件交互和 DTO 显示契约测试。', tone: 'risk' },
+          { name: 'happy-dom / jsdom', stage: '验证必需', purpose: '组件测试 DOM 环境，按测试稳定性二选一。', tone: 'risk' },
+          { name: 'playwright', stage: '验证必需', purpose: 'Wails WebView 或浏览器 smoke，覆盖跨平台工作台主路径。', tone: 'risk' },
+          { name: 'eslint / typescript-eslint / eslint-plugin-vue / prettier', stage: '验证必需', purpose: '代码风格、Vue/TS 静态检查和格式统一。', tone: 'risk' },
+          { name: 'wails-generated-bindings', stage: '切片 0 必需', purpose: '由 Wails 生成的 JS/TS binding，作为前端访问 Go service 的唯一入口。', tone: 'source' },
+        ],
+      },
+      {
+        title: 'Go Backend SDK',
+        description:
+          'Go 后端是领域执行真相，负责项目文件、图谱、资产、运行、交接包、结果回收、审计、隐私和 provider 配置。',
+        rows: [
+          { name: 'github.com/wailsapp/wails/v2', stage: '切片 0 必需', purpose: '桌面窗口、Go 方法绑定、前端事件推送和应用打包。', tone: 'flow' },
+          { name: 'context / os / io / fs / filepath / encoding/json / slog', stage: '切片 0 必需', purpose: '项目文件、路径守卫、序列化、取消和结构化日志的标准库基线。', tone: 'source' },
+          { name: 'sync / time / crypto/sha256 / net/http / os/exec', stage: '首批必需', purpose: '并发保护、时间、digest、Provider HTTP 调用和本地工具进程封装。', tone: 'source' },
+          { name: 'golang.org/x/sync/errgroup', stage: '首批必需', purpose: '导入、健康检查、批量校验和导出任务的并发编排。', tone: 'source' },
+          { name: 'golang.org/x/sync/singleflight', stage: '建议首批', purpose: '去重重复健康检查、索引刷新和 provider profile 读取。', tone: 'neutral' },
+          { name: 'github.com/fsnotify/fsnotify', stage: '首批必需', purpose: '监听项目文件变化，触发 dirty/stale 状态和健康提示。', tone: 'source' },
+          { name: 'github.com/oklog/ulid/v2 / github.com/google/uuid', stage: '首批必需', purpose: '生成 Project、Graph、Asset、Shot、Run、Package、Take 等稳定 ID。', tone: 'source' },
+          { name: 'github.com/santhosh-tekuri/jsonschema/v6', stage: '首批必需', purpose: '项目清单、图谱、包 manifest、输出契约和迁移结果校验。', tone: 'risk' },
+          { name: 'gopkg.in/yaml.v3', stage: '首批必需', purpose: '模板、能力包、交接 profile 和局部配置读取。', tone: 'flow' },
+          { name: 'github.com/yuin/goldmark', stage: '建议首批', purpose: 'Markdown 指令预览、交接说明和报告渲染。', tone: 'neutral' },
+          { name: 'github.com/disintegration/imaging', stage: '首批必需', purpose: '参考图缩略图、预览图、导入检查和结果图派生物。', tone: 'app' },
+          { name: 'golang.org/x/image', stage: '首批必需', purpose: '补齐图片格式、解码和图像处理能力。', tone: 'app' },
+          { name: 'github.com/99designs/keyring / github.com/zalando/go-keyring', stage: '首批必需', purpose: '把 provider API key、token、refresh token 存入系统密钥存储。', tone: 'risk' },
+          { name: 'modernc.org/sqlite', stage: '后续可选', purpose: '只作为索引、搜索或缓存优化，不作为首批项目主存储。', tone: 'neutral' },
+          { name: 'github.com/stretchr/testify', stage: '验证必需', purpose: 'Go service、迁移、运行、错误和 provider 配置单元测试。', tone: 'risk' },
+          { name: 'github.com/google/go-cmp/cmp', stage: '验证必需', purpose: 'DTO、schema、manifest、审计事件和输出契约结构比对。', tone: 'risk' },
+        ],
+      },
+      {
+        title: 'Provider / AI Adapter',
+        description:
+          'Provider 能力先以抽象 profile 和 adapter 进入。文本、图片、视频理解与生成都由 Go RuntimeGateway 控制，前端只展示预览和状态。',
+        rows: [
+          { name: 'RuntimeGateway', stage: '首批必需', purpose: '统一任务创建、取消、队列状态、事件推送、错误映射和运行记录。', tone: 'source' },
+          { name: 'ProviderProfile', stage: '首批必需', purpose: '声明 provider 类型、模型、能力、限流、超时、端点和默认输出契约。', tone: 'source' },
+          { name: 'ProviderConfigService', stage: '首批必需', purpose: '管理全局 profile、项目默认 profile、非敏感覆盖和凭据解析。', tone: 'risk' },
+          { name: 'ManualHandoffAdapter', stage: '首批必需', purpose: '生成交接包、上传清单和手动外部生成状态，不自动提交外部平台。', tone: 'flow' },
+          { name: 'net/http', stage: '接入 API 时启用', purpose: '官方 Go SDK 缺失或质量不足时，用后端 HTTP client 封装 provider REST API。', tone: 'source' },
+          { name: 'provider-official-go-sdk', stage: '按 provider 选择', purpose: '仅在某个 provider 官方 Go SDK 稳定、可测、不会泄漏密钥时纳入对应 adapter。', tone: 'neutral' },
+          { name: 'os/exec', stage: '本地工具可选', purpose: '封装本地 CLI 型 provider 或媒体工具；必须有超时、取消、stderr 脱敏和审计。', tone: 'risk' },
+          { name: 'ffmpeg / ffprobe', stage: '媒体后处理可选', purpose: '视频时长、封面、转码、探测和结果导入辅助，不进入切片 0。', tone: 'neutral' },
+        ],
+      },
+      {
+        title: 'Provider Configuration & Credentials',
+        description:
+          'Provider 配置分为全局可复用 profile、项目默认引用、项目非敏感覆盖和系统密钥存储四层；密钥永远不进入项目。',
+        rows: [
+          { name: '~/.tuyu-studio/config/provider_profiles', stage: '全局配置', purpose: '保存多个项目复用的 provider profile、能力声明、端点、模型、限流和超时。', tone: 'source' },
+          { name: 'providerProfileId', stage: '项目引用', purpose: '项目只保存默认 profile 标识，可迁移且不包含敏感信息。', tone: 'flow' },
+          { name: 'credentialRef', stage: '凭据引用', purpose: 'profile 内只保存密钥引用，由后端解析到系统密钥存储。', tone: 'risk' },
+          { name: 'System Keyring', stage: '敏感凭据', purpose: 'API key、token、refresh token 和 secret 只存系统密钥存储。', tone: 'risk' },
+          { name: 'project provider override', stage: '项目覆盖', purpose: '仅允许覆盖模型、质量档位、默认输出目录、能力启用等非敏感字段。', tone: 'app' },
+          { name: 'redaction scan', stage: '导出门禁', purpose: '导出包、支持包、审计、日志和测试 fixture 写入前扫描并阻断凭据泄漏。', tone: 'risk' },
+          { name: 'provider profile export/import', stage: '后续可选', purpose: '只导出脱敏 profile 元数据，不导出 credentialRef 对应的真实密钥。', tone: 'neutral' },
+        ],
+      },
+      {
+        title: 'Not In Core',
+        description:
+          '这些依赖或方案不进入首批核心，避免绕过 Wails/Go 边界、提前云化或引入和桌面壳重复的技术路线。',
+        rows: [
+          { name: 'axios', stage: '不引入', purpose: '前端不直接请求 provider；需要 HTTP 时由 Go 后端 net/http adapter 处理。', tone: 'risk' },
+          { name: 'gin / echo / fiber', stage: '不引入', purpose: '不是 Web Server 产品，首批不在桌面 App 内嵌 HTTP API 服务。', tone: 'risk' },
+          { name: 'frontend-ai-sdk', stage: '不引入', purpose: '避免 API key 进入前端 bundle 或 DevTools，可视层只调用 Wails binding。', tone: 'risk' },
+          { name: 'frontend-filesystem-sdk', stage: '不引入', purpose: '前端不直接读写本机路径，文件访问必须经 Go service 和路径守卫。', tone: 'risk' },
+          { name: 'sqlite-as-primary-storage', stage: '暂不引入', purpose: '首批以本地项目文件为 truth；SQLite 只作为后续索引/缓存候选。', tone: 'neutral' },
+          { name: 'electron', stage: '不引入', purpose: '桌面壳选择 Wails，避免双桌面框架并行。', tone: 'risk' },
+        ],
+      },
+    ],
   },
   {
     id: 'wf-project-setup',
@@ -261,10 +519,10 @@ export const workflowPages = [
   {
     id: 'wf-creative-graph',
     slug: 'creative-graph',
-    title: 'Creative Graph',
-    navTitle: 'Creative Graph',
+    title: 'Project Canvas/Creative Graph',
+    navTitle: 'Project Canvas/Creative Graph',
     summary:
-      '创作图谱页展示未来 App 的主要工作面：以节点、边、双层生产组、状态徽标和 Inspector 把剧本、参考资产、Shot、Prompt、输出与历史串起来。',
+      'Project Canvas页展示未来 App 的主要工作面：以节点、边、双层生产组、状态徽标和 Inspector 把剧本、参考资产、Shot、Prompt、输出与历史串起来。',
     sourceBasis: [
       'details/02-creative-graph-domain-model/README.md',
       'details/02-creative-graph-domain-model/nodes-and-edges.md',
@@ -273,7 +531,7 @@ export const workflowPages = [
     userActions: [
       '创建节点、连接合法关系、移动布局并选择对象查看 Inspector。',
       '把视频、图片、文本等输入放入内层参考组，再用外层生产组承载任务意图和输出目标。',
-      '从生产组展开上下文预览，查看参考组、供应商能力、输出节点和运行历史。',
+      '从生产组展开上下文预览，查看参考组、provider能力、输出节点和运行历史。',
       '删除或修改高影响对象前查看 ImpactReport。',
     ],
     systemWrites: [
@@ -296,7 +554,7 @@ export const workflowPages = [
     ],
     moduleRefs: ['creative-graph', 'asset-continuity', 'script-package', 'instruction-stack', 'workbench-ux'],
     sketch: productionFrameSketch(
-      'Creative Graph Workbench',
+      'Project Canvas/Creative Graph Workbench',
       'Main canvas',
       balconyFrame,
     ),
@@ -307,29 +565,41 @@ export const workflowPages = [
     title: 'Shot & Prompt',
     navTitle: 'Shot & Prompt',
     summary:
-      '分镜与提示词页展示镜头卡字段、双层生产组上下文、供应商能力、输出契约、生产组运行和提示词运行队列，强调运行前的可解释确认。',
+      '分镜与提示词页以画布内脚本展开表为入口，把 ScriptScene 拆成镜号、时长、画面、角色和角色图候选行；用户逐行确认后再生成 ShotCard、Prompt 预览和生产组运行。',
     sourceBasis: [
+      'details/04-script-shot-package-workflow/script-to-scene.md',
       'details/04-script-shot-package-workflow/shot-card-lifecycle.md',
       'details/05-instruction-stack-and-skills/instruction-compile-order.md',
+      'details/07-frontend-workbench-experience/canvas-interactions.md',
       'details/06-ai-runtime-and-provider-adapters/runtime-gateway.md',
     ],
     userActions: [
+      '从 ScriptScene、Blueprint 或 Agent 命令在 Project Canvas 生成脚本展开表。',
+      '在表格中检查镜号、时长、画面描述、角色、角色描述、角色图和 source range。',
+      '对单行执行重新生成、逐行确认、生成 Shot 或生成分镜，必要时全屏展开宽表。',
       '补齐 ShotCard 的场景、角色、镜头、动作、时长和参考资产。',
-      '预览生产组的参考输入组、能力包、输出契约和供应商能力范围。',
+      '预览生产组的参考输入组、能力包、输出契约和provider能力范围。',
       '确认后运行结构化文本、图像或接入后的视频任务，查看输出预览和历史轨。',
     ],
     systemWrites: [
+      '写入 ScriptExpansionRow 候选版本、行级状态、sourceRange 和角色图引用。',
+      '表格重新生成只创建新候选版本，不覆盖已确认或锁定的 ShotCard。',
+      '用户确认行后才创建或更新 ShotCard，并记录 script.expand.* / shot.confirm.* audit。',
       '保存镜头字段、生产组上下文摘要、编译请求、生产组运行和提示词运行。',
       '输出校验通过后才写正式 Prompt、Asset 或 Shot 派生字段。',
       '失败写错误记录，不污染正式对象。',
     ],
     blockers: [
+      '脚本展开行缺少镜号、时长、source range、角色图引用或必要角色描述。',
+      '已确认或连续性锁定的行被 Agent 尝试覆盖。',
       '必填字段缺失、上下文冲突、context too large。',
       'schema missing、run_output_invalid、provider error。',
       '图片/视频理解能力缺失时，媒体分析和自动拆镜不可运行。',
       '外部请求缺少用户确认。',
     ],
     recoveryActions: [
+      '保留旧候选版本，按行重新生成、手动补字段或回到 ScriptScene 重新拆场。',
+      '缺角色图时先进入资产库绑定参考图，再回到展开表继续确认。',
       '补字段、裁剪上下文、选择冲突优先级或替换能力包。',
       '缺媒体理解时改为人工说明或手动分镜表，不删除参考组。',
       '从同一上下文创建新 PromptRun 重试。',
@@ -350,10 +620,10 @@ export const workflowPages = [
   {
     id: 'wf-package-export',
     slug: 'package-export',
-    title: 'Package Export',
-    navTitle: 'Package Export',
+    title: 'Handoff Fallback',
+    navTitle: 'Handoff Fallback',
     summary:
-      '交接包导出页把 Shot、Prompt、参考图、连续性说明和 manifest 汇总为可独立检查的包；包状态和 Shot 状态由校验结果推进。',
+      '交接包 fallback页把 Shot、Prompt、参考图、连续性说明和 manifest 汇总为可独立检查的包；包状态和 Shot 状态由校验结果推进。',
     sourceBasis: [
       'details/04-script-shot-package-workflow/package-export.md',
       'details/06-ai-runtime-and-provider-adapters/provider-handoff-adapter.md',
@@ -381,7 +651,7 @@ export const workflowPages = [
     ],
     moduleRefs: ['script-package', 'asset-continuity', 'runtime-adapters', 'security-observability', 'delivery-acceptance'],
     sketch: sketch(
-      'Package Export Review',
+      'Handoff Fallback Review',
       'Handoff state',
       'Runs',
       [
