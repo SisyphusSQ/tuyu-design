@@ -5,3 +5,4 @@ npm-debug.log*
 *.tsbuildinfo
 .idea/
 pencil-exports/
+.superpowers/
